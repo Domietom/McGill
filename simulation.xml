@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<aircraft>
+  <ac id="4">
+    <conflict type="intersection">
+      <location lat="49.00914806346052" lon="2.5824281063647714"/>
+      <offset dist="50"/>
+    </conflict>
+  </ac>
+</aircraft>

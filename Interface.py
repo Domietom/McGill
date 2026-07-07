@@ -1,0 +1,144 @@
+from PySide6.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
+from PySide6.QtCore import QPoint, Qt, QPointF
+from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette
+from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, zoom_point, inv_zoom_point
+
+SCREEN_SIZE = (1200,800)
+
+class Interface(QWidget):
+
+    def __init__(self, apt, xml_class):
+        super().__init__()
+
+        self.width = SCREEN_SIZE[0]
+        self.height = SCREEN_SIZE[1]
+
+        self.setWindowTitle("Airport")
+        self.resize(self.width, self.height)
+
+        palette = self.palette()
+        palette.setColor(QPalette.ColorRole.Window, QColor("lightgrey"))
+        self.setPalette(palette)
+        self.setAutoFillBackground(True)
+
+        self.center = (self.width/2, self.height/2)
+        self.airport = apt
+        self.zoom = 0.1
+        self.offset = QPointF()
+
+        self.last_pos = QPointF(0,0)
+
+        self.conflicts = []
+
+        self.xml_class = xml_class
+
+    def paintEvent(self, event):
+
+        painter = QPainter(self)
+        pen = QPen(Qt.darkBlue)
+        pen.setWidth(10)
+        painter.setPen(pen)
+
+        for runway in self.airport.runways :
+            ext1 = utm_to_screen(runway.side1[1], self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext1 = QPointF(ext1[0],ext1[1])
+            ext2 = utm_to_screen(runway.side2[1], self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext2 = QPointF(ext2[0], ext2[1])
+
+            painter.drawLine(ext1, ext2)
+        
+        pen.setWidth(2)
+        painter.setPen(pen)
+
+        # for taxiNode in self.airport.taxiNodes.values() :
+        #     node = utm_to_screen(taxiNode.pos, self.zoom, self.airport.center, SCREEN_SIZE)
+        #     node = QPoint(node[0], node[1])
+        #     painter.drawPoint(node)
+
+        for taxiSegment in self.airport.taxiSegments :
+            ext1 = utm_to_screen(taxiSegment.node1.pos, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext1 = QPointF(ext1[0],ext1[1])
+            ext2 = utm_to_screen(taxiSegment.node2.pos, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext2 = QPointF(ext2[0], ext2[1])
+
+            painter.drawLine(ext1, ext2)
+
+        pen = QPen(Qt.red)
+        pen.setWidth(10)
+        painter.setPen(pen)
+
+        for conflict in self.conflicts :
+            delta = zoom_point(conflict, self.zoom, self.offset, SCREEN_SIZE)
+            painter.drawEllipse(delta, 3, 3)
+
+        painter.end()
+
+    def wheelEvent(self, event: QWheelEvent):
+        
+        delta = event.angleDelta().y()
+
+        if delta > 0:
+            self.zoom *= 1.1
+        else:
+            self.zoom *= 0.9
+
+        self.zoom = max(0.01, min(self.zoom, 10))
+
+        # delta = screen_to_utm(event.position(), self.zoom, self.offset, self.center, SCREEN_SIZE) - mouse_pos
+        # delta = (delta.x(), delta.y())
+        # zoom_offset = utm_to_screen(delta, self.zoom, self.offset, self.center, SCREEN_SIZE)
+
+        # self.offset += QPointF(zoom_offset[0], zoom_offset[1])
+        self.update()
+
+    def mousePressEvent(self, event):
+
+        if event.button() == Qt.RightButton:
+            
+            screen_pos = event.pos()
+            delta = inv_zoom_point(screen_pos, self.zoom, self.offset, SCREEN_SIZE)
+            self.conflicts.append(delta)
+            self.update()
+
+            utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            geo_pos = utm_to_geo(utm_pos.x(), utm_pos.y(), self.airport.zoneNumber, self.airport.zoneLetter)
+
+            # offset, ok = QInputDialog.getInt(self, "Entrée","Entrez un entier :", value=0)
+            # if ok :
+            #     self.xml_class.intersection_type(geo_pos, offset)
+            #     self.xml_class.write()
+            # else :
+            #     self.conflicts = self.conflicts[:-1]
+
+            self.edit = QLineEdit(self)
+            self.edit.setGeometry(event.x(), event.y(), 40, 25)
+            self.edit.setToolTip("Please enter the offset in meters")
+            self.edit.show()
+            self.edit.setFocus()
+            self.edit.returnPressed.connect(lambda: self.valider(geo_pos))
+
+        if event.button() == Qt.LeftButton:
+
+            self.last_pos = event.pos()
+
+    def valider(self, geo_pos):
+        xml_offset = int(self.edit.text())
+        self.xml_class.intersection_type(geo_pos, xml_offset)
+        self.xml_class.write()
+
+        self.edit.hide()
+        self.edit.deleteLater()
+
+    def mouseMoveEvent(self, event):
+
+        if event.buttons() & Qt.LeftButton:
+            delta = event.pos() - self.last_pos
+            self.offset += delta
+            self.last_pos = event.pos()
+            self.update()
+
+    def mouseReleaseEvent(self, event):
+        pass
+
+
+# https://www.w3schools.com/python/trypython.asp?filename=demo_ref_string_split2
