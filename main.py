@@ -2,6 +2,7 @@ from Airport import Airport
 from PySide6.QtWidgets import QApplication
 from Interface import Interface
 from WriteXML import WriteXML
+from ScenarioDialog import ScenarioDialog
 import sys
 
 def main():
@@ -12,10 +13,16 @@ def main():
     app = QApplication(sys.argv)
     airport.readApt()
 
-    xml_class = WriteXML()
+    dialog = ScenarioDialog()
 
-    interface = Interface(airport, xml_class)
-    interface.show()
+    if dialog.exec():
+        scenario = dialog.getScenario()
+        print(f"sc = {scenario}")
+
+        xml_class = WriteXML()
+
+        interface = Interface(airport, xml_class, scenario)
+        interface.show()
 
     sys.exit(app.exec())
 

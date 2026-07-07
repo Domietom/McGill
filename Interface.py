@@ -1,13 +1,14 @@
 from PySide6.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
 from PySide6.QtCore import QPoint, Qt, QPointF
 from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette
-from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, zoom_point, inv_zoom_point
+from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, zoom_point, inv_zoom_point, geo_to_utm
+import xml.etree.ElementTree as ET
 
 SCREEN_SIZE = (1200,800)
 
 class Interface(QWidget):
 
-    def __init__(self, apt, xml_class):
+    def __init__(self, apt, xml_class, scenario):
         super().__init__()
 
         self.width = SCREEN_SIZE[0]
@@ -23,6 +24,7 @@ class Interface(QWidget):
 
         self.center = (self.width/2, self.height/2)
         self.airport = apt
+        self.scenario = scenario
         self.zoom = 0.1
         self.offset = QPointF()
 
@@ -70,6 +72,27 @@ class Interface(QWidget):
         for conflict in self.conflicts :
             delta = zoom_point(conflict, self.zoom, self.offset, SCREEN_SIZE)
             painter.drawEllipse(delta, 3, 3)
+
+        trajectories_dico = list(self.read_trajectories().values())
+
+        pen.setWidth(4)
+        painter.setPen(pen)
+        
+        for trajectory in trajectories_dico:
+            tj_i = trajectory[0]
+            for point in trajectory[1:]:
+                ext1_geo = (tj_i[0], tj_i[1])
+                ext1_utm = geo_to_utm(ext1_geo[0], ext1_geo[1])
+                ext1_screen = utm_to_screen(ext1_utm, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+                ext1 = QPointF(ext1_screen[0],ext1_screen[1])
+
+                ext2_geo = (point[0], point[1])
+                ext2_utm = geo_to_utm(ext2_geo[0], ext2_geo[1])
+                ext2_screen = utm_to_screen(ext2_utm, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+                ext2 = QPointF(ext2_screen[0], ext2_screen[1])
+                painter.drawLine(ext1, ext2)
+
+                tj_i = point
 
         painter.end()
 
@@ -139,6 +162,29 @@ class Interface(QWidget):
 
     def mouseReleaseEvent(self, event):
         pass
+
+    def read_trajectories(self):
+        trajectories_dico = {}
+        tree = ET.parse(self.scenario)
+        root = tree.getroot()
+
+        for trajectory in root.findall('trajectory'):
+            
+            # Get aircraft ID
+            ac_id = int(trajectory.get('ac-id'))
+            trajectories_dico[ac_id] = []
+            
+            # Analyze waypoints the aircraft will have to go to
+            waypoints = trajectory.find('waypoints')
+            
+            # Go through every waypoint coordinates and store them in the local list
+            if waypoints is not None:
+                for waypoint in waypoints.findall('waypoint'):
+                    lat = float(waypoint.get('lat'))
+                    lon = float(waypoint.get('lon'))
+                    speed = float(waypoint.get('speed')) #* 0.5144 #Conversion noeuds -> m/s
+                    trajectories_dico[ac_id].append([lat, lon, speed])
+        return trajectories_dico
 
 
 # https://www.w3schools.com/python/trypython.asp?filename=demo_ref_string_split2
