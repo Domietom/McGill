@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
 from PySide6.QtCore import QPoint, Qt, QPointF
-from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette
+from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette, QPixmap
 from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, zoom_point, inv_zoom_point, geo_to_utm
 import xml.etree.ElementTree as ET
 
@@ -79,12 +79,15 @@ class Interface(QWidget):
         painter.setPen(pen)
         
         for trajectory in trajectories_dico:
-            tj_i = trajectory[0]
+            tj_1 = trajectory[0]
+
+            ext1_geo = (tj_1[0], tj_1[1])
+            ext1_utm = geo_to_utm(ext1_geo[0], ext1_geo[1])
+            ext1_screen = utm_to_screen(ext1_utm, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext1 = QPointF(ext1_screen[0],ext1_screen[1])
+            tj_1 = ext1
+
             for point in trajectory[1:]:
-                ext1_geo = (tj_i[0], tj_i[1])
-                ext1_utm = geo_to_utm(ext1_geo[0], ext1_geo[1])
-                ext1_screen = utm_to_screen(ext1_utm, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
-                ext1 = QPointF(ext1_screen[0],ext1_screen[1])
 
                 ext2_geo = (point[0], point[1])
                 ext2_utm = geo_to_utm(ext2_geo[0], ext2_geo[1])
@@ -92,7 +95,10 @@ class Interface(QWidget):
                 ext2 = QPointF(ext2_screen[0], ext2_screen[1])
                 painter.drawLine(ext1, ext2)
 
-                tj_i = point
+                ext1 = ext2
+
+            icon = QPixmap(r"images\user_position.jpg")
+            painter.drawPixmap(tj_1.x()-11, tj_1.y()-11, 22, 22, icon)
 
         painter.end()
 
