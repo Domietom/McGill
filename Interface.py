@@ -16,11 +16,7 @@ class Interface(QWidget):
 
         self.setWindowTitle("Airport")
         self.resize(self.width, self.height)
-
-        palette = self.palette()
-        palette.setColor(QPalette.ColorRole.Window, QColor("lightgrey"))
-        self.setPalette(palette)
-        self.setAutoFillBackground(True)
+        self.setStyleSheet("background: lightgrey;")
 
         self.center = (self.width/2, self.height/2)
         self.airport = apt
