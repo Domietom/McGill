@@ -2,14 +2,8 @@
 <aircraft>
   <ac id="4">
     <conflict type="intersection">
-      <location lat="49.00911420781145" lon="2.582304753932084"/>
-      <offset dist="40"/>
-    </conflict>
-  </ac>
-  <ac id="4">
-    <conflict type="intersection">
-      <location lat="49.00944925290278" lon="2.588681240793019"/>
-      <offset dist="20"/>
+      <location lat="49.01501981297081" lon="2.580187264337929"/>
+      <offset dist="50"/>
     </conflict>
   </ac>
 </aircraft>
