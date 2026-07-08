@@ -12,11 +12,7 @@ class ScenarioDialog(QDialog):
         layout.addWidget(QLabel("Please choose a scenario :"))
 
         self.combo = QComboBox()
-        self.combo.addItems([
-            "Scenario 1",
-            "Scenario 2",
-            "Scenario 3"
-        ])
+        self.combo.addItems(["Scenario 1", "Scenario 2"])
         layout.addWidget(self.combo)
 
         bouton = QPushButton("Validate")

@@ -23,6 +23,9 @@ def main():
         interface = Interface(airport, xml_class, scenario)
         interface.show()
 
+    else:
+        sys.exit()
+        
     sys.exit(app.exec())
 
 if __name__ == "__main__": 
