@@ -17,7 +17,6 @@ def main():
 
     if dialog.exec():
         scenario = dialog.getScenario()
-        print(f"sc = {scenario}")
 
         xml_class = WriteXML()
 

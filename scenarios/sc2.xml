@@ -1,0 +1,15 @@
+<trajectories>
+	<trajectory ac-id="0">
+		<waypoints>
+			<waypoint lat="49.006226" lon="2.582553" speed="15"/>
+            <waypoint lat="49.009378" lon="2.582391" speed="15"/>
+            <waypoint lat="49.008784" lon="2.577416" speed="10"/>
+			<waypoint lat="49.008661" lon="2.575544" speed="10"/>
+            <waypoint lat="49.008532" lon="2.571609" speed="10"/>
+            <waypoint lat="49.008396" lon="2.569092" speed="10"/>
+            <waypoint lat="49.008066" lon="2.564352" speed="10"/>
+            <waypoint lat="49.005637" lon="2.564682" speed="10"/>
+            <waypoint lat="49.005715" lon="2.566936" speed="10"/>
+		</waypoints>
+	</trajectory>
+</trajectories>

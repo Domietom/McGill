@@ -11,14 +11,14 @@ class Interface(QWidget):
     def __init__(self, apt, xml_class, scenario):
         super().__init__()
 
-        self.width = SCREEN_SIZE[0]
-        self.height = SCREEN_SIZE[1]
+        # self.screen_size = (self.width(), self.height())
 
         self.setWindowTitle("Airport")
-        self.resize(self.width, self.height)
+        # self.resize(self.width, self.height)
+        self.showMaximized()
         self.setStyleSheet("background: lightgrey;")
 
-        self.center = (self.width/2, self.height/2)
+        self.center = self.rect().center()
         self.airport = apt
         self.scenario = scenario
         self.zoom = 0.1
@@ -29,6 +29,9 @@ class Interface(QWidget):
         self.conflicts = []
 
         self.xml_class = xml_class
+    
+    def get_screen_size(self):
+        return self.width(), self.height()
 
     def paintEvent(self, event):
 
@@ -38,9 +41,9 @@ class Interface(QWidget):
         painter.setPen(pen)
 
         for runway in self.airport.runways :
-            ext1 = utm_to_screen(runway.side1[1], self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext1 = utm_to_screen(runway.side1[1], self.zoom, self.offset, self.airport.center, self.get_screen_size())
             ext1 = QPointF(ext1[0],ext1[1])
-            ext2 = utm_to_screen(runway.side2[1], self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext2 = utm_to_screen(runway.side2[1], self.zoom, self.offset, self.airport.center, self.get_screen_size())
             ext2 = QPointF(ext2[0], ext2[1])
 
             painter.drawLine(ext1, ext2)
@@ -49,14 +52,14 @@ class Interface(QWidget):
         painter.setPen(pen)
 
         # for taxiNode in self.airport.taxiNodes.values() :
-        #     node = utm_to_screen(taxiNode.pos, self.zoom, self.airport.center, SCREEN_SIZE)
+        #     node = utm_to_screen(taxiNode.pos, self.zoom, self.airport.center, self.get_screen_size())
         #     node = QPoint(node[0], node[1])
         #     painter.drawPoint(node)
 
         for taxiSegment in self.airport.taxiSegments :
-            ext1 = utm_to_screen(taxiSegment.node1.pos, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext1 = utm_to_screen(taxiSegment.node1.pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
             ext1 = QPointF(ext1[0],ext1[1])
-            ext2 = utm_to_screen(taxiSegment.node2.pos, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext2 = utm_to_screen(taxiSegment.node2.pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
             ext2 = QPointF(ext2[0], ext2[1])
 
             painter.drawLine(ext1, ext2)
@@ -66,7 +69,7 @@ class Interface(QWidget):
         painter.setPen(pen)
 
         for conflict in self.conflicts :
-            delta = zoom_point(conflict, self.zoom, self.offset, SCREEN_SIZE)
+            delta = zoom_point(conflict, self.zoom, self.offset, self.get_screen_size())
             painter.drawEllipse(delta, 3, 3)
 
         trajectories_dico = list(self.read_trajectories().values())
@@ -79,7 +82,7 @@ class Interface(QWidget):
 
             ext1_geo = (tj_1[0], tj_1[1])
             ext1_utm = geo_to_utm(ext1_geo[0], ext1_geo[1])
-            ext1_screen = utm_to_screen(ext1_utm, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            ext1_screen = utm_to_screen(ext1_utm, self.zoom, self.offset, self.airport.center, self.get_screen_size())
             ext1 = QPointF(ext1_screen[0],ext1_screen[1])
             tj_1 = ext1
 
@@ -87,7 +90,7 @@ class Interface(QWidget):
 
                 ext2_geo = (point[0], point[1])
                 ext2_utm = geo_to_utm(ext2_geo[0], ext2_geo[1])
-                ext2_screen = utm_to_screen(ext2_utm, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+                ext2_screen = utm_to_screen(ext2_utm, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                 ext2 = QPointF(ext2_screen[0], ext2_screen[1])
                 painter.drawLine(ext1, ext2)
 
@@ -109,9 +112,9 @@ class Interface(QWidget):
 
         self.zoom = max(0.01, min(self.zoom, 10))
 
-        # delta = screen_to_utm(event.position(), self.zoom, self.offset, self.center, SCREEN_SIZE) - mouse_pos
+        # delta = screen_to_utm(event.position(), self.zoom, self.offset, self.center, self.get_screen_size()) - mouse_pos
         # delta = (delta.x(), delta.y())
-        # zoom_offset = utm_to_screen(delta, self.zoom, self.offset, self.center, SCREEN_SIZE)
+        # zoom_offset = utm_to_screen(delta, self.zoom, self.offset, self.center, self.get_screen_size())
 
         # self.offset += QPointF(zoom_offset[0], zoom_offset[1])
         self.update()
@@ -121,11 +124,11 @@ class Interface(QWidget):
         if event.button() == Qt.RightButton:
             
             screen_pos = event.pos()
-            delta = inv_zoom_point(screen_pos, self.zoom, self.offset, SCREEN_SIZE)
+            delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
             self.conflicts.append(delta)
             self.update()
 
-            utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, SCREEN_SIZE)
+            utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
             geo_pos = utm_to_geo(utm_pos.x(), utm_pos.y(), self.airport.zoneNumber, self.airport.zoneLetter)
 
             # offset, ok = QInputDialog.getInt(self, "Entrée","Entrez un entier :", value=0)
