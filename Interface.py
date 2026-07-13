@@ -1,5 +1,6 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton, QListWidgetItem
 from Map import Map
+from AircraftItem import AircraftItem
 
 class Interface(QWidget):
 
@@ -22,9 +23,17 @@ class Interface(QWidget):
         rightPanel.addWidget(self.addPlaneButton)
 
         layout = QHBoxLayout(self)
-        layout.addWidget(self.mapWidget, 4)
+        layout.addWidget(self.mapWidget, 6)
         layout.addLayout(rightPanel, 1)
 
     def add_plane(self):
-        self.aircraftList.addItem(f"AC{self.aircraftId}")
+        card = AircraftItem(self.aircraftId)
+
+        item = QListWidgetItem()
+        item.setSizeHint(card.sizeHint())
+
+        self.aircraftList.addItem(item)
+        self.aircraftList.setItemWidget(item, card)
+        
+        # self.aircraftList.addItem(f"AC{self.aircraftId}")
         self.aircraftId += 1
