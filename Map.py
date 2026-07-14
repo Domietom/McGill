@@ -23,6 +23,11 @@ class Map(QWidget):
         self.conflicts = []
 
         self.xml_class = xml_class
+
+        self.waitingForConflictPoint = False
+        self.waitingForTrajectoryPoints = False
+
+        self.trajectory = []
     
     def get_screen_size(self):
         return self.width(), self.height()
@@ -93,6 +98,19 @@ class Map(QWidget):
             icon = QPixmap(r"images\user_position.jpg")
             painter.drawPixmap(tj_1.x()-11, tj_1.y()-11, 22, 22, icon)
 
+        if len(self.trajectory)>=2:
+            ext1 = self.trajectory[0]
+
+            for point in self.trajectory[1:]:
+
+                # ext2_geo = (point.x(), point.y())
+                # ext2_utm = geo_to_utm(ext2_geo[0], ext2_geo[1])
+                # ext2_screen = utm_to_screen(ext2_utm, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                # ext2 = QPointF(ext2_screen[0], ext2_screen[1])
+                painter.drawLine(ext1, point)
+
+                ext1 = point
+
         painter.end()
 
     def wheelEvent(self, event: QWheelEvent):
@@ -116,28 +134,37 @@ class Map(QWidget):
     def mousePressEvent(self, event):
 
         if event.button() == Qt.RightButton:
+
+            if self.waitingForConflictPoint:
+                screen_pos = event.pos()
+                delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
+                self.conflicts.append(delta)
+                self.update()
+
+                utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                geo_pos = utm_to_geo(utm_pos.x(), utm_pos.y(), self.airport.zoneNumber, self.airport.zoneLetter)
+
+                # offset, ok = QInputDialog.getInt(self, "Entrée","Entrez un entier :", value=0)
+                # if ok :
+                #     self.xml_class.intersection_type(geo_pos, offset)
+                #     self.xml_class.write()
+                # else :
+                #     self.conflicts = self.conflicts[:-1]
+
+                self.edit = QLineEdit(self)
+                self.edit.setGeometry(event.x(), event.y(), 40, 25)
+                self.edit.setToolTip("Please enter the offset in meters")
+                self.edit.show()
+                self.edit.setFocus()
+                self.edit.returnPressed.connect(lambda: self.valider(geo_pos))
+
+                self.waitingForConflictPoint = False
             
-            screen_pos = event.pos()
-            delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
-            self.conflicts.append(delta)
-            self.update()
-
-            utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-            geo_pos = utm_to_geo(utm_pos.x(), utm_pos.y(), self.airport.zoneNumber, self.airport.zoneLetter)
-
-            # offset, ok = QInputDialog.getInt(self, "Entrée","Entrez un entier :", value=0)
-            # if ok :
-            #     self.xml_class.intersection_type(geo_pos, offset)
-            #     self.xml_class.write()
-            # else :
-            #     self.conflicts = self.conflicts[:-1]
-
-            self.edit = QLineEdit(self)
-            self.edit.setGeometry(event.x(), event.y(), 40, 25)
-            self.edit.setToolTip("Please enter the offset in meters")
-            self.edit.show()
-            self.edit.setFocus()
-            self.edit.returnPressed.connect(lambda: self.valider(geo_pos))
+            if self.waitingForTrajectoryPoints:
+                screen_pos = event.pos()
+                delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
+                self.trajectory.append(delta)
+                self.update()
 
         if event.button() == Qt.LeftButton:
 
