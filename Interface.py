@@ -1,8 +1,12 @@
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton, QListWidgetItem
+from PySide6.QtCore import Signal
 from Map import Map
 from AircraftItem import AircraftItem
+from Aircraft import Aircraft
 
 class Interface(QWidget):
+
+    endTrajectorySignal = Signal(QWidget)
 
     def __init__(self, apt, xml_class, scenario):
         super().__init__()
@@ -12,7 +16,10 @@ class Interface(QWidget):
 
         self.mapWidget = Map(apt, xml_class, scenario)
         self.aircraftList = QListWidget()
+        self.aircraftList.currentItemChanged.connect(self.on_list_selection)
+
         self.aircraftId = 1
+        self.allAircraft = []
 
         rightPanel = QVBoxLayout()
         rightPanel.addWidget(QLabel("Aircraft list"))
@@ -32,9 +39,22 @@ class Interface(QWidget):
 
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
+        self.allAircraft[-1].trajectory = self.mapWidget.trajectory
+
+        self.mapWidget.trajectory = []
 
     def add_plane(self):
-        card = AircraftItem(self.aircraftId)
+        if len(self.mapWidget.trajectory) != 0:
+            self.mapWidget.waitingForTrajectoryPoints = False
+            self.allAircraft[-1].trajectory = self.mapWidget.trajectory
+
+            self.mapWidget.trajectory = []
+        
+        aircraft = Aircraft(self.aircraftId)
+        self.allAircraft.append(aircraft)
+        self.mapWidget.allAircraft.append(aircraft)
+
+        card = AircraftItem(aircraft)
 
         item = QListWidgetItem()
         item.setSizeHint(card.sizeHint())
@@ -53,8 +73,18 @@ class Interface(QWidget):
         row = self.aircraftList.row(item)
         self.aircraftList.takeItem(row)
 
+        self.allAircraft.remove(card.aircraft)
+        self.mapWidget.allAircraft.remove(card.aircraft)
+
+        self.update()
+
         card.deleteLater()
 
     def add_conflict(self, item, card):
         self.mapWidget.waitingForConflictPoint = True
         self.mapWidget.waitingForTrajectoryPoints = False
+
+    def on_list_selection(self, current, previous):
+        if current:
+            self.mapWidget.currentAircraft = current
+        self.update()

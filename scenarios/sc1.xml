@@ -10,7 +10,7 @@
             <waypoint lat="49.020876" lon="2.577746" speed="15"/>
             <waypoint lat="49.020585" lon="2.570869" speed="15"/>
             <waypoint lat="49.020354" lon="2.566835" speed="15"/>
-            <waypoint lat="49.020395" lon="2.567077" speed="15"/>
+            <waypoint lat="49.020609" lon="2.566448" speed="15"/>
 			<waypoint lat="49.022497" lon="2.566047" speed="15"/>
 		</waypoints>
 	</trajectory>

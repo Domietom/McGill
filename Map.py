@@ -3,7 +3,7 @@ from PySide6.QtCore import QPoint, Qt, QPointF
 from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette, QPixmap
 from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, zoom_point, inv_zoom_point, geo_to_utm
 import xml.etree.ElementTree as ET
-
+from Aircraft import Aircraft
 
 class Map(QWidget):
 
@@ -28,6 +28,8 @@ class Map(QWidget):
         self.waitingForTrajectoryPoints = False
 
         self.trajectory = []
+        self.allAircraft = []
+        self.currentAircraft = Aircraft()
     
     def get_screen_size(self):
         return self.width(), self.height()
@@ -98,18 +100,40 @@ class Map(QWidget):
             icon = QPixmap(r"images\user_position.jpg")
             painter.drawPixmap(tj_1.x()-11, tj_1.y()-11, 22, 22, icon)
 
+        pen = QPen(Qt.black)
+        pen.setWidth(6)
+        painter.setPen(pen)
+
         if len(self.trajectory)>=2:
-            ext1 = self.trajectory[0]
+            start = self.trajectory[0]
+            ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
 
             for point in self.trajectory[1:]:
 
-                # ext2_geo = (point.x(), point.y())
-                # ext2_utm = geo_to_utm(ext2_geo[0], ext2_geo[1])
-                # ext2_screen = utm_to_screen(ext2_utm, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-                # ext2 = QPointF(ext2_screen[0], ext2_screen[1])
-                painter.drawLine(ext1, point)
+                ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
+                painter.drawLine(ext1, ext2)
 
-                ext1 = point
+                ext1 = ext2
+
+        for aircraft in self.allAircraft:
+            trajectory = aircraft.trajectory
+
+            if aircraft == self.currentAircraft:
+                pen = QPen(Qt.yellow)
+                pen.setWidth(6)
+                painter.setPen(pen)
+
+            if len(trajectory)>=2:
+                start = trajectory[0]
+                ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
+
+                for point in trajectory[1:]:
+
+                    ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
+                    painter.drawLine(ext1, ext2)
+
+                    ext1 = ext2
+
 
         painter.end()
 

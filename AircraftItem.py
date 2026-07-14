@@ -6,13 +6,15 @@ class AircraftItem(QFrame):
     deleteRequested = Signal(QWidget)
     conflictRequested = Signal(QWidget)
 
-    def __init__(self, aircraftId):
+    def __init__(self, aircraft):
         super().__init__()
+
+        self.aircraft = aircraft
 
         self.setFrameShape(QFrame.Box)
         self.setLineWidth(2)
 
-        title = QLabel(f"Aircraft {aircraftId}")
+        title = QLabel(f"Aircraft {self.aircraft.ID}")
         title.setStyleSheet("font-weight: bold;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
@@ -29,6 +31,8 @@ class AircraftItem(QFrame):
         layout = QVBoxLayout(self)
         layout.addWidget(title)
         layout.addLayout(buttons)
+
+        
 
         # self.setStyleSheet("""QFrame {
         #                         background-color: white;
