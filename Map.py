@@ -98,7 +98,8 @@ class Map(QWidget):
                 ext1 = ext2
 
             icon = QPixmap(r"images\user_position.jpg")
-            painter.drawPixmap(tj_1.x()-11, tj_1.y()-11, 22, 22, icon)
+            iconSize = 30
+            painter.drawPixmap(tj_1.x()-iconSize/2, tj_1.y()-iconSize/2, iconSize, iconSize, icon)
 
         pen = QPen(Qt.black)
         pen.setWidth(6)
@@ -119,7 +120,12 @@ class Map(QWidget):
             trajectory = aircraft.trajectory
 
             if aircraft == self.currentAircraft:
-                pen = QPen(Qt.yellow)
+                pen = QPen(Qt.darkYellow)
+                pen.setWidth(6)
+                painter.setPen(pen)
+
+            else :
+                pen = QPen(Qt.black)
                 pen.setWidth(6)
                 painter.setPen(pen)
 
@@ -197,7 +203,6 @@ class Map(QWidget):
     def valider(self, geo_pos):
         xml_offset = int(self.edit.text())
         self.xml_class.intersection_type(geo_pos, xml_offset)
-        self.xml_class.write()
 
         self.edit.hide()
         self.edit.deleteLater()

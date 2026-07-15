@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<trajectories>
+  <trajectory ac-id="1">
+    <waypoints>
+      <waypoint lat="1213.9779386653915" lon="774.1204494228534" speed="5"/>
+      <waypoint lat="1999.4434123352225" lon="692.158834779045" speed="5"/>
+      <waypoint lat="2019.9338159961746" lon="869.7423331739633" speed="5"/>
+      <waypoint lat="2381.930947339662" lon="856.0820640666619" speed="5"/>
+      <waypoint lat="2354.610409125059" lon="630.6876237961886" speed="5"/>
+      <waypoint lat="2580.0048493955323" lon="630.6876237961886" speed="5"/>
+    </waypoints>
+  </trajectory>
+  <trajectory ac-id="2">
+    <waypoints>
+      <waypoint lat="4335.349429683763" lon="1286.3805409466563" speed="5"/>
+      <waypoint lat="4280.7083532545585" lon="610.1972201352365" speed="5"/>
+      <waypoint lat="3638.6757052113917" lon="651.1780274571407" speed="5"/>
+    </waypoints>
+  </trajectory>
+  <trajectory ac-id="3">
+    <waypoints>
+      <waypoint lat="3700.146916194248" lon="1648.3776722901437" speed="5"/>
+      <waypoint lat="3693.3167816405976" lon="1559.5859230926844" speed="5"/>
+      <waypoint lat="3884.5605491428173" lon="1552.7557885390338" speed="5"/>
+      <waypoint lat="3898.2208182501186" lon="1621.057134075541" speed="5"/>
+      <waypoint lat="4130.445393074243" lon="1621.057134075541" speed="5"/>
+      <waypoint lat="4246.557680486305" lon="1593.736595860938" speed="5"/>
+      <waypoint lat="4246.557680486305" lon="1511.7749812171296" speed="5"/>
+    </waypoints>
+  </trajectory>
+</trajectories>

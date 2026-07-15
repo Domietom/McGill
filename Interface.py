@@ -40,6 +40,7 @@ class Interface(QWidget):
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
         self.allAircraft[-1].trajectory = self.mapWidget.trajectory
+        self.mapWidget.xml_class.write_trajectory(self.allAircraft[-1])
 
         self.mapWidget.trajectory = []
 
@@ -64,6 +65,8 @@ class Interface(QWidget):
 
         self.aircraftList.addItem(item)
         self.aircraftList.setItemWidget(item, card)
+
+        # self.aircraftList.currentItemChanged.connect(self.on_list_selection)
         
         self.aircraftId += 1
         self.mapWidget.waitingForTrajectoryPoints = True
@@ -86,5 +89,6 @@ class Interface(QWidget):
 
     def on_list_selection(self, current, previous):
         if current:
-            self.mapWidget.currentAircraft = current
+            currentAircraftItem = self.aircraftList.itemWidget(current)
+            self.mapWidget.currentAircraft = currentAircraftItem.aircraft
         self.update()

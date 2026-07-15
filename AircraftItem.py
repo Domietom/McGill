@@ -52,3 +52,6 @@ class AircraftItem(QFrame):
 
     def ask_conflict(self):
         self.conflictRequested.emit(self)
+
+    def __repr__(self):
+        return f'Aircraft Item {self.aircraft.ID}'
