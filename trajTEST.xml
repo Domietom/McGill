@@ -1,17 +1,21 @@
 <?xml version="1.0" ?>
-<trajectories>
-  <trajectory ac-id="1">
+<aircraft>
+  <ac id="1">
     <waypoints>
-      <waypoint lat="1441.0000000000002" lon="1482.5" speed="5"/>
-      <waypoint lat="1631.0000000000002" lon="802.5" speed="5"/>
-      <waypoint lat="601.0000000000002" lon="102.5" speed="5"/>
+      <waypoint lat="49.00428639794507" lon="2.5546371070403806" speed="5"/>
+      <waypoint lat="49.0108703221325" lon="2.559091124007397" speed="5"/>
+      <waypoint lat="49.01736324349527" lon="2.540159862944318" speed="5"/>
     </waypoints>
-  </trajectory>
-  <trajectory ac-id="2">
+  </ac>
+  <ac id="2">
     <waypoints>
-      <waypoint lat="3811.0" lon="2152.5" speed="5"/>
-      <waypoint lat="4571.0" lon="1662.5" speed="5"/>
-      <waypoint lat="4421.0" lon="902.5" speed="5"/>
+      <waypoint lat="49.002700161602256" lon="2.5632650730150806" speed="5"/>
+      <waypoint lat="49.01182180504156" lon="2.5728947022973743" speed="5"/>
+      <waypoint lat="49.0201070458064" lon="2.5516236886800594" speed="5"/>
     </waypoints>
-  </trajectory>
-</trajectories>
+    <conflict type="intersection">
+      <location lat="49.01209014621611" lon="2.572482147826696"/>
+      <offset dist="50"/>
+    </conflict>
+  </ac>
+</aircraft>

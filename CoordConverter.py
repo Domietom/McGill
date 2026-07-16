@@ -36,18 +36,28 @@ def screen_to_utm(pos, zoom, offset, center, screen_size):
 
     return QPointF(x,y)
 
-def zoom_point(pos, zoom, offset, screen_size):
-    width = screen_size[0]
-    height = screen_size[1]
-    delta = QPointF(width/2, height/2)
+def geo_to_screen(geo_pos, zoom, offset, center, screen_size):
+    utm_pos = geo_to_utm(geo_pos[0], geo_pos[1])
+    screen_pos = utm_to_screen(utm_pos, zoom, offset, center, screen_size)
+    return QPointF(screen_pos[0], screen_pos[1])
 
-    return pos * zoom + (1-zoom) * delta + offset
+def screen_to_geo(pos, zoom, offset, center, screen_size, zoneNumber, zoneLetter):
+    utm_pos = screen_to_utm(pos, zoom, offset, center, screen_size)
+    geo_pos = utm_to_geo(utm_pos.x(), utm_pos.y(), zoneNumber, zoneLetter)
+    return geo_pos
 
-def inv_zoom_point(pos, zoom, offset, screen_size):
-    width = screen_size[0]
-    height = screen_size[1]
+# def zoom_point(pos, zoom, offset, screen_size):
+#     width = screen_size[0]
+#     height = screen_size[1]
+#     delta = QPointF(width/2, height/2)
 
-    x = (pos.x() - (1-zoom) * (width/2) - offset.x()) / zoom
-    y = (pos.y() - (1-zoom) * (height/2) - offset.y()) / zoom
+#     return pos * zoom + (1-zoom) * delta + offset
 
-    return QPointF(x,y)
+# def inv_zoom_point(pos, zoom, offset, screen_size):
+#     width = screen_size[0]
+#     height = screen_size[1]
+
+#     x = (pos.x() - (1-zoom) * (width/2) - offset.x()) / zoom
+#     y = (pos.y() - (1-zoom) * (height/2) - offset.y()) / zoom
+
+#     return QPointF(x,y)

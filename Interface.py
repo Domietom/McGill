@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton, QListWidgetItem
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QCloseEvent
 from Map import Map
 from AircraftItem import AircraftItem
 from Aircraft import Aircraft
@@ -45,7 +46,7 @@ class Interface(QWidget):
         self.mapWidget.waitingForTrajectoryPoints = False
         self.updateOKButton()
         self.allAircraft[-1].trajectory = self.mapWidget.trajectory
-        self.mapWidget.xml_class.write_trajectory(self.allAircraft[-1])
+        # self.mapWidget.xml_class.write_trajectory(self.allAircraft[-1])
 
         self.mapWidget.trajectory = []
 
@@ -92,6 +93,7 @@ class Interface(QWidget):
     def add_conflict(self, item, card):
         self.mapWidget.waitingForConflictPoint = True
         self.mapWidget.waitingForTrajectoryPoints = False
+        self.aircraftList.setCurrentItem(item)
 
     def on_list_selection(self, current, previous):
         if current:
@@ -101,3 +103,6 @@ class Interface(QWidget):
 
     def updateOKButton(self):
         self.endTrajectoryButton.setChecked(self.mapWidget.waitingForTrajectoryPoints)
+
+    def closeEvent(self, event: QCloseEvent):
+        self.mapWidget.xml_class.write_all(self.allAircraft)

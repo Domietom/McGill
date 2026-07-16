@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
 from PySide6.QtCore import QPoint, Qt, QPointF
 from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette, QPixmap
-from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, zoom_point, inv_zoom_point, geo_to_utm
+from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, geo_to_utm, geo_to_screen, screen_to_geo # zoom_point, inv_zoom_point, 
 import xml.etree.ElementTree as ET
 from Aircraft import Aircraft
 
@@ -69,9 +69,9 @@ class Map(QWidget):
         pen.setWidth(10)
         painter.setPen(pen)
 
-        for conflict in self.conflicts :
-            delta = zoom_point(conflict, self.zoom, self.offset, self.get_screen_size())
-            painter.drawEllipse(delta, 3, 3)
+        # for conflict in self.conflicts :
+        #     delta = zoom_point(conflict, self.zoom, self.offset, self.get_screen_size())
+        #     painter.drawEllipse(delta, 3, 3)
 
         trajectories_dico = list(self.read_trajectories().values())
 
@@ -107,8 +107,9 @@ class Map(QWidget):
 
 
         if len(self.trajectory) != 0 :
-            start = self.trajectory[0]
-            ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
+            start = self.trajectory[0][0]
+            # ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
+            ext1 = geo_to_screen(start, self.zoom, self.offset, self.airport.center, self.get_screen_size())
 
             # icon = QPixmap(r"images\ai_position.png")
             # iconSize = 30
@@ -117,8 +118,10 @@ class Map(QWidget):
 
             if len(self.trajectory)>=2:
 
-                for point in self.trajectory[1:]:
-                    ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
+                for waypoint in self.trajectory[1:]:
+                    point = waypoint[0]
+                    # ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
+                    ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                     painter.drawLine(ext1, ext2)
                     ext1 = ext2
 
@@ -136,15 +139,27 @@ class Map(QWidget):
                 painter.setPen(pen)
 
             if len(trajectory)>=2:
-                start = trajectory[0]
-                ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
+                start = trajectory[0][0]
+                # ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
+                ext1 = geo_to_screen(start, self.zoom, self.offset, self.airport.center, self.get_screen_size())
 
-                for point in trajectory[1:]:
+                for waypoint in trajectory[1:]:
+                    point = waypoint[0]
 
-                    ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
+                    # ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
+                    ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                     painter.drawLine(ext1, ext2)
 
                     ext1 = ext2
+
+            for conflict in aircraft.conflicts:
+                geo_pos = conflict[0]
+                screen_pos = geo_to_screen(geo_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+
+                pen = QPen(Qt.red)
+                pen.setWidth(10)
+                painter.setPen(pen)
+                painter.drawEllipse(screen_pos, 3, 3)
 
 
         painter.end()
@@ -173,9 +188,9 @@ class Map(QWidget):
 
             if self.waitingForConflictPoint:
                 screen_pos = event.pos()
-                delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
-                self.conflicts.append(delta)
-                self.update()
+                # delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
+                # self.conflicts.append(delta)
+                # self.update()
 
                 utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                 geo_pos = utm_to_geo(utm_pos.x(), utm_pos.y(), self.airport.zoneNumber, self.airport.zoneLetter)
@@ -198,8 +213,10 @@ class Map(QWidget):
             
             if self.waitingForTrajectoryPoints:
                 screen_pos = event.pos()
-                delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
-                self.trajectory.append(delta)
+                geo_pos = screen_to_geo(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size(), self.airport.zoneNumber, self.airport.zoneLetter)
+                # delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
+                waypoint = (geo_pos, 5)
+                self.trajectory.append(waypoint)
                 self.update()
 
         if event.button() == Qt.LeftButton:
@@ -208,7 +225,10 @@ class Map(QWidget):
 
     def valider(self, geo_pos):
         xml_offset = int(self.edit.text())
-        self.xml_class.intersection_type(geo_pos, xml_offset)
+
+        for aircraft in self.allAircraft:
+            if aircraft.ID == self.currentAircraft.ID:
+                aircraft.conflicts.append((geo_pos, xml_offset))
 
         self.edit.hide()
         self.edit.deleteLater()

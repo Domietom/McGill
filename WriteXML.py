@@ -6,6 +6,7 @@ class WriteXML:
     def __init__(self):
         self.conflictsRoot = ET.Element('aircraft')
         self.trajectoriesRoot = ET.Element('trajectories')
+        self.finishedRoot = ET.Element('aircraft')
 
     def intersection_type(self, pos, offset_value):
         root = self.conflictsRoot
@@ -39,3 +40,32 @@ class WriteXML:
             waypoint.set('speed', '5')
 
         self.write(root, "trajTEST.xml")
+
+    def write_all(self, allAircraft):
+        root = self.finishedRoot
+
+        for aircraft in allAircraft:
+
+            ac = ET.SubElement(root, 'ac')
+            ac.set('id', str(aircraft.ID))
+            waypoints = ET.SubElement(ac, 'waypoints')
+            for point in aircraft.trajectory:
+                waypoint = ET.SubElement(waypoints, 'waypoint')
+                waypoint.set('lat', str(point[0][0]))
+                waypoint.set('lon', str(point[0][1]))
+                waypoint.set('speed', str(point[1]))
+
+            for conflict in aircraft.conflicts:
+                position = conflict[0]
+                offset_value = conflict[1]
+
+                conflictXML = ET.SubElement(ac, 'conflict')
+                conflictXML.set('type', 'intersection')
+                location = ET.SubElement(conflictXML, 'location')
+                location.set('lat', str(position[0]))
+                location.set('lon', str(position[1]))
+                offset = ET.SubElement(conflictXML, 'offset')
+                offset.set('dist', str(offset_value))
+
+        self.write(root, "trajTEST.xml")
+        
