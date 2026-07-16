@@ -105,16 +105,22 @@ class Map(QWidget):
         pen.setWidth(6)
         painter.setPen(pen)
 
-        if len(self.trajectory)>=2:
+
+        if len(self.trajectory) != 0 :
             start = self.trajectory[0]
             ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
 
-            for point in self.trajectory[1:]:
+            # icon = QPixmap(r"images\ai_position.png")
+            # iconSize = 30
+            # painter.drawPixmap(ext1.x()-iconSize/2, ext2.y()-iconSize/2, iconSize, iconSize, icon)
+            # painter.drawText(icon.rect(), Qt.AlignCenter, str(self.currentAircraft.ID))
 
-                ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
-                painter.drawLine(ext1, ext2)
+            if len(self.trajectory)>=2:
 
-                ext1 = ext2
+                for point in self.trajectory[1:]:
+                    ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
+                    painter.drawLine(ext1, ext2)
+                    ext1 = ext2
 
         for aircraft in self.allAircraft:
             trajectory = aircraft.trajectory

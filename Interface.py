@@ -26,6 +26,10 @@ class Interface(QWidget):
         rightPanel.addWidget(self.aircraftList)
 
         self.endTrajectoryButton = QPushButton('OK')
+        self.endTrajectoryButton.setCheckable(True)
+        self.endTrajectoryButton.setStyleSheet("""QPushButton:checked {
+                                        background-color: yellow;
+                                        border: 2px solid black;}""")
         self.endTrajectoryButton.clicked.connect(self.end_trajectory)
         rightPanel.addWidget(self.endTrajectoryButton)
 
@@ -39,6 +43,7 @@ class Interface(QWidget):
 
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
+        self.updateOKButton()
         self.allAircraft[-1].trajectory = self.mapWidget.trajectory
         self.mapWidget.xml_class.write_trajectory(self.allAircraft[-1])
 
@@ -70,6 +75,7 @@ class Interface(QWidget):
         
         self.aircraftId += 1
         self.mapWidget.waitingForTrajectoryPoints = True
+        self.updateOKButton()
 
     def remove_plane(self, item, card):
 
@@ -92,3 +98,6 @@ class Interface(QWidget):
             currentAircraftItem = self.aircraftList.itemWidget(current)
             self.mapWidget.currentAircraft = currentAircraftItem.aircraft
         self.update()
+
+    def updateOKButton(self):
+        self.endTrajectoryButton.setChecked(self.mapWidget.waitingForTrajectoryPoints)
