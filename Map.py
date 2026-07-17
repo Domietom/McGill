@@ -20,14 +20,11 @@ class Map(QWidget):
 
         self.last_pos = QPointF(0,0)
 
-        self.conflicts = []
-
         self.xml_class = xml_class
 
         self.waitingForConflictPoint = False
         self.waitingForTrajectoryPoints = False
 
-        # self.trajectory = []
         self.allAircraft = []
         self.currentAircraft = Aircraft()
     
@@ -96,20 +93,17 @@ class Map(QWidget):
             tj_1 = trajectory[0]
 
             ext1_geo = (tj_1[0], tj_1[1])
-            ext1_utm = geo_to_utm(ext1_geo[0], ext1_geo[1])
-            ext1_screen = utm_to_screen(ext1_utm, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-            ext1 = QPointF(ext1_screen[0],ext1_screen[1])
-            tj_1 = ext1
+            ext1_screen = geo_to_screen(ext1_geo, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+            tj_1 = ext1_screen
 
             for point in trajectory[1:]:
 
                 ext2_geo = (point[0], point[1])
-                ext2_utm = geo_to_utm(ext2_geo[0], ext2_geo[1])
-                ext2_screen = utm_to_screen(ext2_utm, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-                ext2 = QPointF(ext2_screen[0], ext2_screen[1])
-                painter.drawLine(ext1, ext2)
+                ext2_screen = geo_to_screen(ext2_geo, self.zoom, self.offset, self.airport.center, self.get_screen_size())
 
-                ext1 = ext2
+                painter.drawLine(ext1_screen, ext2_screen)
+
+                ext1_screen = ext2_screen
 
             icon = QPixmap(r"images\user_position.jpg")
             iconSize = 30
