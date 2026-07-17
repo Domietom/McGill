@@ -20,7 +20,7 @@ class Interface(QWidget):
         self.aircraftList.currentItemChanged.connect(self.on_list_selection)
 
         self.aircraftId = 1
-        self.allAircraft = []
+        # self.allAircraft = []
 
         rightPanel = QVBoxLayout()
         rightPanel.addWidget(QLabel("Aircraft list"))
@@ -45,26 +45,30 @@ class Interface(QWidget):
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
         self.updateOKButton()
-        self.allAircraft[-1].trajectory = self.mapWidget.trajectory
-        # self.mapWidget.xml_class.write_trajectory(self.allAircraft[-1])
+        self.mapWidget.allAircraft.append(self.mapWidget.currentAircraft)
+        # self.allAircraft[-1].trajectory = self.mapWidget.trajectory
 
-        self.mapWidget.trajectory = []
+        # self.mapWidget.trajectory = []
 
     def add_plane(self):
-        if len(self.mapWidget.trajectory) != 0:
-            self.mapWidget.waitingForTrajectoryPoints = False
-            self.allAircraft[-1].trajectory = self.mapWidget.trajectory
+        if len(self.mapWidget.currentAircraft.trajectory) != 0:
+            self.end_trajectory()
+            # self.mapWidget.waitingForTrajectoryPoints = False
+            # self.allAircraft[-1].trajectory = self.mapWidget.trajectory
 
-            self.mapWidget.trajectory = []
+            # self.mapWidget.trajectory = []
         
-        aircraft = Aircraft(self.aircraftId)
-        self.allAircraft.append(aircraft)
-        self.mapWidget.allAircraft.append(aircraft)
+        # aircraft = Aircraft(self.aircraftId)
+        # self.allAircraft.append(aircraft)
+        # self.mapWidget.allAircraft.append(aircraft)
+        self.mapWidget.currentAircraft = Aircraft(self.aircraftId)
 
-        card = AircraftItem(aircraft)
+        card = AircraftItem(self.mapWidget.currentAircraft)
 
         item = QListWidgetItem()
         item.setSizeHint(card.sizeHint())
+
+        self.aircraftList.setCurrentItem(item)
 
         card.deleteRequested.connect(lambda w=card, i=item: self.remove_plane(i, w))
         card.conflictRequested.connect(lambda w=card, i=item: self.add_conflict(i,w))
@@ -83,8 +87,9 @@ class Interface(QWidget):
         row = self.aircraftList.row(item)
         self.aircraftList.takeItem(row)
 
-        self.allAircraft.remove(card.aircraft)
-        self.mapWidget.allAircraft.remove(card.aircraft)
+        # self.allAircraft.remove(card.aircraft)
+        if card.aircraft in self.mapWidget.allAircraft:
+            self.mapWidget.allAircraft.remove(card.aircraft)
 
         self.update()
 
@@ -105,4 +110,4 @@ class Interface(QWidget):
         self.endTrajectoryButton.setChecked(self.mapWidget.waitingForTrajectoryPoints)
 
     def closeEvent(self, event: QCloseEvent):
-        self.mapWidget.xml_class.write_all(self.allAircraft)
+        self.mapWidget.xml_class.write_all(self.mapWidget.allAircraft)

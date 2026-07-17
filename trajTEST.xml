@@ -2,20 +2,38 @@
 <aircraft>
   <ac id="1">
     <waypoints>
-      <waypoint lat="49.00428639794507" lon="2.5546371070403806" speed="5"/>
-      <waypoint lat="49.0108703221325" lon="2.559091124007397" speed="5"/>
-      <waypoint lat="49.01736324349527" lon="2.540159862944318" speed="5"/>
+      <waypoint lat="49.00391493493067" lon="2.5516323449703235" speed="5"/>
+      <waypoint lat="49.011152157339154" lon="2.562233895878917" speed="5"/>
+      <waypoint lat="49.00983165401085" lon="2.5699032955772068" speed="5"/>
+      <waypoint lat="49.00425453590614" lon="2.5699513268859118" speed="5"/>
     </waypoints>
+    <conflict type="intersection">
+      <location lat="49.01103130293046" lon="2.562145051207568"/>
+      <offset dist="20"/>
+    </conflict>
   </ac>
   <ac id="2">
     <waypoints>
-      <waypoint lat="49.002700161602256" lon="2.5632650730150806" speed="5"/>
-      <waypoint lat="49.01182180504156" lon="2.5728947022973743" speed="5"/>
-      <waypoint lat="49.0201070458064" lon="2.5516236886800594" speed="5"/>
+      <waypoint lat="49.02048911330134" lon="2.5345232457320384" speed="5"/>
+      <waypoint lat="49.01968678653781" lon="2.5592867997085875" speed="5"/>
+      <waypoint lat="49.014714633225424" lon="2.5529029631380045" speed="5"/>
+      <waypoint lat="49.014683627310234" lon="2.5449711512548214" speed="5"/>
     </waypoints>
     <conflict type="intersection">
-      <location lat="49.01209014621611" lon="2.572482147826696"/>
-      <offset dist="50"/>
+      <location lat="49.01523732428822" lon="2.553421028131685"/>
+      <offset dist="20"/>
+    </conflict>
+  </ac>
+  <ac id="1">
+    <waypoints>
+      <waypoint lat="49.00391493493067" lon="2.5516323449703235" speed="5"/>
+      <waypoint lat="49.011152157339154" lon="2.562233895878917" speed="5"/>
+      <waypoint lat="49.00983165401085" lon="2.5699032955772068" speed="5"/>
+      <waypoint lat="49.00425453590614" lon="2.5699513268859118" speed="5"/>
+    </waypoints>
+    <conflict type="intersection">
+      <location lat="49.01103130293046" lon="2.562145051207568"/>
+      <offset dist="20"/>
     </conflict>
   </ac>
 </aircraft>
