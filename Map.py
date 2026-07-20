@@ -27,6 +27,8 @@ class Map(QWidget):
 
         self.allAircraft = []
         self.currentAircraft = Aircraft()
+
+        self.trajectories_dico = {}
     
     def get_screen_size(self):
         return self.width(), self.height()
@@ -84,7 +86,7 @@ class Map(QWidget):
         #     delta = zoom_point(conflict, self.zoom, self.offset, self.get_screen_size())
         #     painter.drawEllipse(delta, 3, 3)
 
-        trajectories_dico = list(self.read_trajectories().values())
+        trajectories_dico = list(self.trajectories_dico.values())
 
         pen.setWidth(4)
         painter.setPen(pen)
@@ -109,36 +111,37 @@ class Map(QWidget):
             iconSize = 30
             painter.drawPixmap(tj_1.x()-iconSize/2, tj_1.y()-iconSize/2, iconSize, iconSize, icon)
         
-        currentTrajectory = self.currentAircraft.trajectory
-        if len(currentTrajectory) != 0 :
-            start = currentTrajectory[0][0]
-            ext1 = geo_to_screen(start, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-            start = ext1
+        if self.currentAircraft.ID != 0:
+            currentTrajectory = self.currentAircraft.trajectory
+            if len(currentTrajectory) != 0 :
+                start = currentTrajectory[0][0]
+                ext1 = geo_to_screen(start, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                start = ext1
 
-            self.draw_start(start, self.currentAircraft.ID, painter)
+                self.draw_start(start, self.currentAircraft.ID, painter)
 
-            if len(currentTrajectory)>=2:
+                if len(currentTrajectory)>=2:
 
-                for waypoint in currentTrajectory[1:]:
-                    point = waypoint[0]
-                    ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-                    painter.drawLine(ext1, ext2)
-                    ext1 = ext2
+                    for waypoint in currentTrajectory[1:]:
+                        point = waypoint[0]
+                        ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                        painter.drawLine(ext1, ext2)
+                        ext1 = ext2
+                
+                self.draw_start(start, self.currentAircraft.ID, painter)
             
-            self.draw_start(start, self.currentAircraft.ID, painter)
-        
-        currentConflicts = self.currentAircraft.conflicts
-        if len(currentConflicts) != 0:
-            for conflict in currentConflicts:
-                geo_pos = conflict[0]
-                screen_pos = geo_to_screen(geo_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+            currentConflicts = self.currentAircraft.conflicts
+            if len(currentConflicts) != 0:
+                for conflict in currentConflicts:
+                    geo_pos = conflict[0]
+                    screen_pos = geo_to_screen(geo_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
 
-                pen = QPen(Qt.red)
-                pen.setWidth(10)
-                painter.setPen(pen)
-                painter.drawEllipse(screen_pos, 3, 3)
+                    pen = QPen(Qt.red)
+                    pen.setWidth(10)
+                    painter.setPen(pen)
+                    painter.drawEllipse(screen_pos, 3, 3)
 
-        for aircraft in self.allAircraft:
+        for aircraft in self.allAircraft[1:]:
             trajectory = aircraft.trajectory
 
             if aircraft == self.currentAircraft:
@@ -260,7 +263,8 @@ class Map(QWidget):
         pass
 
     def read_trajectories(self):
-        trajectories_dico = {}
+        userAircraft = Aircraft()
+        
         tree = ET.parse(self.scenario)
         root = tree.getroot()
 
@@ -268,7 +272,7 @@ class Map(QWidget):
             
             # Get aircraft ID
             ac_id = int(trajectory.get('ac-id'))
-            trajectories_dico[ac_id] = []
+            self.trajectories_dico[ac_id] = []
             
             # Analyze waypoints the aircraft will have to go to
             waypoints = trajectory.find('waypoints')
@@ -279,8 +283,9 @@ class Map(QWidget):
                     lat = float(waypoint.get('lat'))
                     lon = float(waypoint.get('lon'))
                     speed = float(waypoint.get('speed')) #* 0.5144 #Conversion noeuds -> m/s
-                    trajectories_dico[ac_id].append([lat, lon, speed])
-        return trajectories_dico
+                    self.trajectories_dico[ac_id].append([lat, lon, speed])
+                    userAircraft.trajectory.append(((lat, lon), speed))
+        self.allAircraft.append(userAircraft)
 
 
 # https://www.w3schools.com/python/trypython.asp?filename=demo_ref_string_split2

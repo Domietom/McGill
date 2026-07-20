@@ -44,15 +44,22 @@ class Interface(QWidget):
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
         self.updateOKButton()
-        self.mapWidget.allAircraft.append(self.mapWidget.currentAircraft)
+        if self.mapWidget.currentAircraft not in self.mapWidget.allAircraft and self.mapWidget.currentAircraft.ID != 0:
+            self.mapWidget.allAircraft.append(self.mapWidget.currentAircraft)
         self.mapWidget.currentAircraft = Aircraft()
         self.update()
 
     def add_plane(self):
-        if len(self.mapWidget.currentAircraft.trajectory) != 0:
+        if len(self.mapWidget.currentAircraft.trajectory) > 1:
             self.end_trajectory()
 
-        self.mapWidget.currentAircraft = Aircraft(self.aircraftId)
+        ids = [aircraft.ID for aircraft in self.mapWidget.allAircraft]
+        for i in range(1,20):
+            if i not in ids:
+                firstAvailableId = i
+                break
+
+        self.mapWidget.currentAircraft = Aircraft(firstAvailableId)
 
         card = AircraftItem(self.mapWidget.currentAircraft)
 
@@ -75,12 +82,22 @@ class Interface(QWidget):
 
         row = self.aircraftList.row(item)
         self.aircraftList.takeItem(row)
-
+        # print("AVANT:")
+        # print(self.mapWidget.allAircraft)
+        # print(f' a sup {card.aircraft}')
+        # print(f'current {self.mapWidget.currentAircraft}')
+        if self.mapWidget.waitingForTrajectoryPoints:
+            self.end_trajectory()
         if card.aircraft in self.mapWidget.allAircraft:
             self.mapWidget.allAircraft.remove(card.aircraft)
 
-        self.update()
+        if len(self.mapWidget.allAircraft) <= 1:
+            self.mapWidget.currentAircraft = Aircraft() 
 
+        self.update()
+        # print("APRES:")
+        # print(f'allAfter: {self.mapWidget.allAircraft}')
+        # print(f'currentAfter {self.mapWidget.currentAircraft}')
         card.deleteLater()
 
     def add_conflict(self, item, card):
@@ -90,9 +107,13 @@ class Interface(QWidget):
 
     def on_list_selection(self, current, previous):
         if current:
-            currentAircraftItem = self.aircraftList.itemWidget(current)
-            self.mapWidget.currentAircraft = currentAircraftItem.aircraft
+            if len(self.mapWidget.allAircraft) != 0:
+                self.end_trajectory()
+                currentAircraftItem = self.aircraftList.itemWidget(current)
+                self.mapWidget.currentAircraft = currentAircraftItem.aircraft
         self.update()
+        print(f"all {self.mapWidget.allAircraft}")
+
 
     def updateOKButton(self):
         self.endTrajectoryButton.setChecked(self.mapWidget.waitingForTrajectoryPoints)

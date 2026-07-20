@@ -21,6 +21,7 @@ def main():
         xml_class = WriteXML()
 
         interface = Interface(airport, xml_class, scenario)
+        interface.mapWidget.read_trajectories()
         interface.show()
 
     else:
