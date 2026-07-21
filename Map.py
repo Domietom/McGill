@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
 from PySide6.QtCore import QPoint, Qt, QPointF, QRect
 from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette, QPixmap
-from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, geo_to_utm, geo_to_screen, screen_to_geo # zoom_point, inv_zoom_point, 
+from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, geo_to_utm, geo_to_screen, screen_to_geo #, zoom_point , inv_zoom_point, 
 import xml.etree.ElementTree as ET
 from Aircraft import Aircraft
 
@@ -35,7 +35,7 @@ class Map(QWidget):
 
     def draw_start(self, position, acID, painter):
         icon = QPixmap(r"images\ai_position.png")
-        iconSize = 30
+        iconSize = 30 + 5*self.zoom
         rect = QRect(position.x() - iconSize/2, position.y() - iconSize/2, iconSize, iconSize)
         painter.drawPixmap(rect, icon)
 
@@ -44,14 +44,14 @@ class Map(QWidget):
             painter.drawText(rect, Qt.AlignCenter, str(acID))
             
         pen = QPen(Qt.black)
-        pen.setWidth(6)
+        pen.setWidth(4 + 5*self.zoom)
         painter.setPen(pen)
 
     def paintEvent(self, event):
 
         painter = QPainter(self)
         pen = QPen(Qt.darkBlue)
-        pen.setWidth(10)
+        pen.setWidth(13 + 7*self.zoom)
         painter.setPen(pen)
 
         for runway in self.airport.runways :
@@ -62,7 +62,7 @@ class Map(QWidget):
 
             painter.drawLine(ext1, ext2)
         
-        pen.setWidth(2)
+        pen.setWidth(2+ 5*self.zoom)
         painter.setPen(pen)
 
         # for taxiNode in self.airport.taxiNodes.values() :
@@ -108,8 +108,11 @@ class Map(QWidget):
                 ext1_screen = ext2_screen
 
             icon = QPixmap(r"images\user_position.jpg")
-            iconSize = 30
+            iconSize = 30 + 5*self.zoom
             painter.drawPixmap(tj_1.x()-iconSize/2, tj_1.y()-iconSize/2, iconSize, iconSize, icon)
+        
+        pen.setWidth(4 + 5*self.zoom)
+        painter.setPen(pen)
         
         if self.currentAircraft.ID != 0:
             currentTrajectory = self.currentAircraft.trajectory
@@ -137,7 +140,7 @@ class Map(QWidget):
                     screen_pos = geo_to_screen(geo_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
 
                     pen = QPen(Qt.red)
-                    pen.setWidth(10)
+                    pen.setWidth(10 + 5*self.zoom)
                     painter.setPen(pen)
                     painter.drawEllipse(screen_pos, 3, 3)
 
@@ -146,12 +149,12 @@ class Map(QWidget):
 
             if aircraft == self.currentAircraft:
                 pen = QPen(Qt.darkYellow)
-                pen.setWidth(6)
+                pen.setWidth(4 + 5*self.zoom)
                 painter.setPen(pen)
 
             else :
                 pen = QPen(Qt.black)
-                pen.setWidth(6)
+                pen.setWidth(4 + 5*self.zoom)
                 painter.setPen(pen)
 
             if len(trajectory)>=2:
@@ -175,7 +178,7 @@ class Map(QWidget):
                 screen_pos = geo_to_screen(geo_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
 
                 pen = QPen(Qt.red)
-                pen.setWidth(10)
+                pen.setWidth(10 + 5*self.zoom)
                 painter.setPen(pen)
                 painter.drawEllipse(screen_pos, 3, 3)
 
@@ -183,6 +186,10 @@ class Map(QWidget):
         painter.end()
 
     def wheelEvent(self, event: QWheelEvent):
+
+        mousePos = event.position()
+        mapPos = screen_to_utm(mousePos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+        mapPos = (mapPos.x(), mapPos.y())
         
         delta = event.angleDelta().y()
 
@@ -193,11 +200,11 @@ class Map(QWidget):
 
         self.zoom = max(0.01, min(self.zoom, 10))
 
-        # delta = screen_to_utm(event.position(), self.zoom, self.offset, self.center, self.get_screen_size()) - mouse_pos
-        # delta = (delta.x(), delta.y())
-        # zoom_offset = utm_to_screen(delta, self.zoom, self.offset, self.center, self.get_screen_size())
+        newMousePos = utm_to_screen(mapPos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+        newMousePos = QPointF(newMousePos[0], newMousePos[1])
+        delta = mousePos - newMousePos
+        self.offset += delta
 
-        # self.offset += QPointF(zoom_offset[0], zoom_offset[1])
         self.update()
 
     def mousePressEvent(self, event):

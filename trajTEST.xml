@@ -15,14 +15,14 @@
       <waypoint lat="49.022497" lon="2.566047" speed="15.0"/>
     </waypoints>
   </ac>
-  <ac id="2">
+  <ac id="1">
     <waypoints>
-      <waypoint lat="49.009333152728" lon="2.5861912637944613" speed="5"/>
-      <waypoint lat="49.00908242270614" lon="2.5810193912251984" speed="5"/>
-      <waypoint lat="49.00818776393881" lon="2.58114448552148" speed="5"/>
+      <waypoint lat="49.0093498833572" lon="2.586131389949755" speed="5"/>
+      <waypoint lat="49.00887578979689" lon="2.577204626076775" speed="5"/>
+      <waypoint lat="49.00825775637587" lon="2.577310579757326" speed="5"/>
     </waypoints>
     <conflict type="intersection">
-      <location lat="49.00916476921061" lon="2.5823961828988664"/>
+      <location lat="49.0091542581606" lon="2.5823969456150384"/>
       <offset dist="50"/>
     </conflict>
   </ac>
