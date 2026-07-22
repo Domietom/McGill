@@ -15,15 +15,16 @@
       <waypoint lat="49.022497" lon="2.566047" speed="15.0"/>
     </waypoints>
   </ac>
-  <ac id="1">
+  <ac id="2">
     <waypoints>
-      <waypoint lat="49.0093498833572" lon="2.586131389949755" speed="5"/>
-      <waypoint lat="49.00887578979689" lon="2.577204626076775" speed="5"/>
-      <waypoint lat="49.00825775637587" lon="2.577310579757326" speed="5"/>
+      <waypoint lat="49.00936237917792" lon="2.586175062887308" speed="5"/>
+      <waypoint lat="49.00914222219338" lon="2.582425768943839" speed="5"/>
+      <waypoint lat="49.009100665079934" lon="2.5810217579411256" speed="5"/>
+      <waypoint lat="49.00818940626024" lon="2.581140272185657" speed="5"/>
     </waypoints>
     <conflict type="intersection">
-      <location lat="49.0091542581606" lon="2.5823969456150384"/>
-      <offset dist="50"/>
+      <location lat="49.00915437767878" lon="2.5824256672930823"/>
+      <offset dist="30"/>
     </conflict>
   </ac>
 </aircraft>

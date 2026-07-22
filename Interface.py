@@ -19,7 +19,7 @@ class Interface(QWidget):
         self.aircraftList = QListWidget()
         self.aircraftList.currentItemChanged.connect(self.on_list_selection)
 
-        self.aircraftId = 1
+        # self.aircraftId = 1
 
         rightPanel = QVBoxLayout()
         rightPanel.addWidget(QLabel("Aircraft list"))
@@ -74,7 +74,7 @@ class Interface(QWidget):
         self.aircraftList.addItem(item)
         self.aircraftList.setItemWidget(item, card)
         
-        self.aircraftId += 1
+        # self.aircraftId += 1
         self.mapWidget.waitingForTrajectoryPoints = True
         self.updateOKButton()
 
