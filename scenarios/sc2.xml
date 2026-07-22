@@ -1,5 +1,5 @@
-<trajectories>
-	<trajectory ac-id="0">
+<aircraft>
+	<ac id="0">
 		<waypoints>
 			<waypoint lat="49.006226" lon="2.582553" speed="15"/>
             <waypoint lat="49.009378" lon="2.582391" speed="15"/>
@@ -11,5 +11,5 @@
             <waypoint lat="49.005637" lon="2.564682" speed="10"/>
             <waypoint lat="49.005715" lon="2.566936" speed="10"/>
 		</waypoints>
-	</trajectory>
-</trajectories>
+	</ac>
+</aircraft>
