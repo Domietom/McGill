@@ -4,13 +4,36 @@
     <waypoints>
       <waypoint lat="49.006226" lon="2.582553" speed="15.0"/>
       <waypoint lat="49.009378" lon="2.582391" speed="15.0"/>
-      <waypoint lat="49.008784" lon="2.577416" speed="10.0"/>
-      <waypoint lat="49.008661" lon="2.575544" speed="10.0"/>
-      <waypoint lat="49.008532" lon="2.571609" speed="10.0"/>
-      <waypoint lat="49.008396" lon="2.569092" speed="10.0"/>
-      <waypoint lat="49.008066" lon="2.564352" speed="10.0"/>
-      <waypoint lat="49.005637" lon="2.564682" speed="10.0"/>
-      <waypoint lat="49.005715" lon="2.566936" speed="10.0"/>
+      <waypoint lat="49.012524" lon="2.581962" speed="15.0"/>
+      <waypoint lat="49.018906" lon="2.581093" speed="15.0"/>
+      <waypoint lat="49.020004" lon="2.58031" speed="15.0"/>
+      <waypoint lat="49.02075" lon="2.57854" speed="15.0"/>
+      <waypoint lat="49.020876" lon="2.577746" speed="15.0"/>
+      <waypoint lat="49.020585" lon="2.570869" speed="15.0"/>
+      <waypoint lat="49.020354" lon="2.566835" speed="15.0"/>
+      <waypoint lat="49.020609" lon="2.566448" speed="15.0"/>
+      <waypoint lat="49.022497" lon="2.566047" speed="15.0"/>
+    </waypoints>
+  </ac>
+  <ac id="1">
+    <waypoints>
+      <waypoint lat="48.98810430427927" lon="2.5939422703005146" speed="5"/>
+      <waypoint lat="48.99890070853085" lon="2.5944013814653872" speed="5"/>
+      <waypoint lat="49.009187542456765" lon="2.578181918925096" speed="5"/>
+    </waypoints>
+  </ac>
+  <ac id="2">
+    <waypoints>
+      <waypoint lat="48.982226421504066" lon="2.6388181687363867" speed="5"/>
+      <waypoint lat="48.999224395860445" lon="2.6376015377162725" speed="5"/>
+      <waypoint lat="49.00053307429091" lon="2.6248769693464364" speed="5"/>
+    </waypoints>
+  </ac>
+  <ac id="3">
+    <waypoints>
+      <waypoint lat="49.01626880010864" lon="2.62284404068483" speed="5"/>
+      <waypoint lat="49.01524054071074" lon="2.6388529040606112" speed="5"/>
+      <waypoint lat="49.00597097008076" lon="2.6375525822666424" speed="5"/>
     </waypoints>
   </ac>
 </aircraft>

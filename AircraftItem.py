@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QFormLayout, QLineEdit
 from PySide6.QtCore import Qt, Signal
 
 class AircraftItem(QFrame):
@@ -10,6 +10,8 @@ class AircraftItem(QFrame):
         super().__init__()
 
         self.aircraft = aircraft
+
+        # self.isSelected = False
 
         self.setFrameShape(QFrame.Box)
         self.setLineWidth(2)
@@ -28,11 +30,9 @@ class AircraftItem(QFrame):
         buttons.addWidget(self.deleteButton)
         buttons.addWidget(self.conflictButton)
 
-        layout = QVBoxLayout(self)
-        layout.addWidget(title)
-        layout.addLayout(buttons)
-
-        
+        self.mainLayout = QVBoxLayout(self)
+        self.mainLayout.addWidget(title)
+        self.mainLayout.addLayout(buttons)
 
         # self.setStyleSheet("""QFrame {
         #                         background-color: white;
@@ -47,11 +47,35 @@ class AircraftItem(QFrame):
         #                         font-weight: bold;}
         #                     """)
 
+        self.formWidget = None
+        self.speedLayout = None
+
     def ask_delete(self):
         self.deleteRequested.emit(self)
 
     def ask_conflict(self):
         self.conflictRequested.emit(self)
+
+    def setSelected(self, isSelected):
+        # self.isSelected = isSelected
+        if len(self.aircraft.trajectory) >=2 and self.aircraft.ID != 0:
+            # self.formWidget.setVisible(isSelected)
+            self.formWidget.show() if isSelected else self.formWidget.hide()
+            self.update()
+
+    def setSpeedChoice(self):
+        trajectory = self.aircraft.trajectory
+        if len(trajectory) >= 2:
+            self.formWidget = QWidget()
+            self.speedLayout = QFormLayout(self.formWidget)
+            for trajectoryPartID in range(1, len(trajectory)):
+                edit = QLineEdit()
+                edit.setPlaceholderText("in knots")
+                label = f"Speed {trajectoryPartID}"
+                self.speedLayout.addRow(label, edit)
+            self.mainLayout.addWidget(self.formWidget)
+
+        self.update()
 
     def __repr__(self):
         return f'Aircraft Item {self.aircraft.ID}'

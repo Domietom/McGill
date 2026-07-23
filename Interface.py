@@ -41,11 +41,19 @@ class Interface(QWidget):
         layout.addWidget(self.mapWidget, 6)
         layout.addLayout(rightPanel, 1)
 
+        # self.currentAircraftItem = None
+
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
         self.updateOKButton()
         if self.mapWidget.currentAircraft not in self.mapWidget.allAircraft and self.mapWidget.currentAircraft.ID != 0:
             self.mapWidget.allAircraft.append(self.mapWidget.currentAircraft)
+
+            currentAircraftItem = self.getAircraftItem(self.mapWidget.currentAircraft)
+            if currentAircraftItem is not None:
+                currentAircraftItem.setSpeedChoice()
+            self.setSize()
+        
         self.mapWidget.currentAircraft = Aircraft()
         self.update()
 
@@ -106,11 +114,17 @@ class Interface(QWidget):
         self.aircraftList.setCurrentItem(item)
 
     def on_list_selection(self, current, previous):
+        if previous:
+            previousAircraftItem = self.aircraftList.itemWidget(previous)
+            previousAircraftItem.setSelected(False)
         if current:
             if len(self.mapWidget.allAircraft) != 0:
                 self.end_trajectory()
                 currentAircraftItem = self.aircraftList.itemWidget(current)
                 self.mapWidget.currentAircraft = currentAircraftItem.aircraft
+                currentAircraftItem.setSelected(True)
+                # print(f"ac {self.mapWidget.currentAircraft} is {currentAircraftItem.isSelected}")
+        self.setSize()
         self.update()
         print(f"all {self.mapWidget.allAircraft}")
 
@@ -120,3 +134,21 @@ class Interface(QWidget):
 
     def closeEvent(self, event: QCloseEvent):
         self.mapWidget.xml_class.write_all(self.mapWidget.allAircraft)
+
+    def getAircraftItem(self, aircraft):
+        for i in range(self.aircraftList.count()):
+            item = self.aircraftList.item(i)
+            widget = self.aircraftList.itemWidget(item)
+
+            if widget.aircraft.ID == aircraft.ID:
+                return widget
+
+        return None
+
+    def setSize(self):
+        for i in range(self.aircraftList.count()):
+            item = self.aircraftList.item(i)
+            widget = self.aircraftList.itemWidget(item)
+
+            if widget is not None:
+                item.setSizeHint(widget.sizeHint())
