@@ -19,8 +19,6 @@ class Interface(QWidget):
         self.aircraftList = QListWidget()
         self.aircraftList.currentItemChanged.connect(self.on_list_selection)
 
-        # self.aircraftId = 1
-
         rightPanel = QVBoxLayout()
         rightPanel.addWidget(QLabel("Aircraft list"))
         rightPanel.addWidget(self.aircraftList)
@@ -41,22 +39,22 @@ class Interface(QWidget):
         layout.addWidget(self.mapWidget, 6)
         layout.addLayout(rightPanel, 1)
 
-        # self.currentAircraftItem = None
-
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
         self.updateOKButton()
-        if self.mapWidget.currentAircraft not in self.mapWidget.allAircraft and self.mapWidget.currentAircraft.ID != 0:
-            self.mapWidget.allAircraft.append(self.mapWidget.currentAircraft)
 
-            currentAircraftItem = self.getAircraftItem(self.mapWidget.currentAircraft)
+        currentAircraft = self.mapWidget.currentAircraft
+        currentAircraftItem = self.getAircraftItem(currentAircraft)
+
+        if currentAircraft not in self.mapWidget.allAircraft and currentAircraft.ID != 0:
+            self.mapWidget.allAircraft.append(currentAircraft)
+            
             if currentAircraftItem is not None:
-                currentAircraftItem.isSelected = False
                 currentAircraftItem.setSpeedChoice()
             
-        currentAircraftItem = self.getAircraftItem(self.mapWidget.currentAircraft)
         if currentAircraftItem is not None:
             currentAircraftItem.setSelected(False)
+            
         self.setSize()
         self.mapWidget.currentAircraft = Aircraft()
         self.update()
@@ -85,31 +83,22 @@ class Interface(QWidget):
 
         self.aircraftList.addItem(item)
         self.aircraftList.setItemWidget(item, card)
-        
-        # self.aircraftId += 1
+
         self.mapWidget.waitingForTrajectoryPoints = True
         self.updateOKButton()
 
     def remove_plane(self, item, card):
-
         row = self.aircraftList.row(item)
         self.aircraftList.takeItem(row)
-        # print("AVANT:")
-        # print(self.mapWidget.allAircraft)
-        # print(f' a sup {card.aircraft}')
-        # print(f'current {self.mapWidget.currentAircraft}')
+
         if self.mapWidget.waitingForTrajectoryPoints:
             self.end_trajectory()
         if card.aircraft in self.mapWidget.allAircraft:
             self.mapWidget.allAircraft.remove(card.aircraft)
-
         if len(self.mapWidget.allAircraft) <= 1:
             self.mapWidget.currentAircraft = Aircraft() 
 
         self.update()
-        # print("APRES:")
-        # print(f'allAfter: {self.mapWidget.allAircraft}')
-        # print(f'currentAfter {self.mapWidget.currentAircraft}')
         card.deleteLater()
 
     def add_conflict(self, item, card):
