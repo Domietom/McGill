@@ -47,6 +47,7 @@ class AircraftItem(QFrame):
 
         self.formWidget = None
         self.speedLayout = None
+        # self.editsSpeed = []
 
     def ask_delete(self):
         self.deleteRequested.emit(self)
@@ -64,14 +65,22 @@ class AircraftItem(QFrame):
         if len(trajectory) >= 2:
             self.formWidget = QWidget()
             self.speedLayout = QFormLayout(self.formWidget)
-            for trajectoryPartID in range(1, len(trajectory)):
+            for segmentID in range(1, len(trajectory)):
                 edit = QLineEdit()
                 edit.setPlaceholderText("in knots")
-                label = f"Speed {trajectoryPartID}"
+                edit.setText("10")
+                label = f"Speed {segmentID}"
                 self.speedLayout.addRow(label, edit)
+
+                self.aircraft.segmentSpeed[segmentID] = "10"
+                edit.textChanged.connect(lambda speed, index=segmentID: self.updateSegmentValue(speed, index))
             self.mainLayout.addWidget(self.formWidget)
 
         self.update()
+
+    def updateSegmentValue(self, speed, index):
+        if self.aircraft.ID != 0:
+            self.aircraft.segmentSpeed[index] = speed
 
     def __repr__(self):
         return f'Aircraft Item {self.aircraft.ID}'

@@ -49,11 +49,19 @@ class WriteXML:
             ac = ET.SubElement(root, 'ac')
             ac.set('id', str(aircraft.ID))
             waypoints = ET.SubElement(ac, 'waypoints')
+            indexSpeed = 0
             for point in aircraft.trajectory:
                 waypoint = ET.SubElement(waypoints, 'waypoint')
                 waypoint.set('lat', str(point[0][0]))
                 waypoint.set('lon', str(point[0][1]))
-                waypoint.set('speed', str(point[1]))
+                if aircraft.ID != 0:
+                    if indexSpeed != 0:
+                        waypoint.set('speed', aircraft.segmentSpeed[indexSpeed])
+                    else:
+                        waypoint.set('speed', "-99")
+                    indexSpeed += 1
+                else:
+                    waypoint.set('speed', "10")
 
             for conflict in aircraft.conflicts:
                 position = conflict[0]

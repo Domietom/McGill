@@ -2,37 +2,26 @@
 <aircraft>
   <ac id="0">
     <waypoints>
-      <waypoint lat="49.006226" lon="2.582553" speed="15.0"/>
-      <waypoint lat="49.009378" lon="2.582391" speed="15.0"/>
-      <waypoint lat="49.012524" lon="2.581962" speed="15.0"/>
-      <waypoint lat="49.018906" lon="2.581093" speed="15.0"/>
-      <waypoint lat="49.020004" lon="2.58031" speed="15.0"/>
-      <waypoint lat="49.02075" lon="2.57854" speed="15.0"/>
-      <waypoint lat="49.020876" lon="2.577746" speed="15.0"/>
-      <waypoint lat="49.020585" lon="2.570869" speed="15.0"/>
-      <waypoint lat="49.020354" lon="2.566835" speed="15.0"/>
-      <waypoint lat="49.020609" lon="2.566448" speed="15.0"/>
-      <waypoint lat="49.022497" lon="2.566047" speed="15.0"/>
+      <waypoint lat="49.006226" lon="2.582553" speed="10"/>
+      <waypoint lat="49.009378" lon="2.582391" speed="10"/>
+      <waypoint lat="49.012524" lon="2.581962" speed="10"/>
+      <waypoint lat="49.018906" lon="2.581093" speed="10"/>
+      <waypoint lat="49.020004" lon="2.58031" speed="10"/>
+      <waypoint lat="49.02075" lon="2.57854" speed="10"/>
+      <waypoint lat="49.020876" lon="2.577746" speed="10"/>
+      <waypoint lat="49.020585" lon="2.570869" speed="10"/>
+      <waypoint lat="49.020354" lon="2.566835" speed="10"/>
+      <waypoint lat="49.020609" lon="2.566448" speed="10"/>
+      <waypoint lat="49.022497" lon="2.566047" speed="10"/>
     </waypoints>
   </ac>
   <ac id="1">
     <waypoints>
-      <waypoint lat="48.995845873703935" lon="2.5954514974447758" speed="5"/>
-      <waypoint lat="48.992141960239564" lon="2.617216519828508" speed="5"/>
-    </waypoints>
-  </ac>
-  <ac id="2">
-    <waypoints>
-      <waypoint lat="48.991664200199125" lon="2.5831826221391965" speed="5"/>
-      <waypoint lat="49.00209141618924" lon="2.5810447268770442" speed="5"/>
-      <waypoint lat="49.002718200720366" lon="2.587630282552269" speed="5"/>
-    </waypoints>
-  </ac>
-  <ac id="3">
-    <waypoints>
-      <waypoint lat="48.999535285571724" lon="2.6014075757837856" speed="5"/>
-      <waypoint lat="49.00234306090108" lon="2.5990698168868955" speed="5"/>
-      <waypoint lat="49.003337221575194" lon="2.592957604462259" speed="5"/>
+      <waypoint lat="48.988270860768246" lon="2.5655782016417357" speed="10"/>
+      <waypoint lat="48.99529546559437" lon="2.5677044337138692" speed="1"/>
+      <waypoint lat="48.9935393404668" lon="2.579339317050361" speed="2"/>
+      <waypoint lat="49.00479696221843" lon="2.5829362928468482" speed="3"/>
+      <waypoint lat="49.004652688335035" lon="2.56817037405932" speed="4"/>
     </waypoints>
   </ac>
 </aircraft>
