@@ -17,23 +17,15 @@
   </ac>
   <ac id="1">
     <waypoints>
-      <waypoint lat="48.98810430427927" lon="2.5939422703005146" speed="5"/>
-      <waypoint lat="48.99890070853085" lon="2.5944013814653872" speed="5"/>
-      <waypoint lat="49.009187542456765" lon="2.578181918925096" speed="5"/>
+      <waypoint lat="48.99791807237535" lon="2.559478885096935" speed="5"/>
+      <waypoint lat="49.00037784600207" lon="2.56766044903374" speed="5"/>
     </waypoints>
   </ac>
   <ac id="2">
     <waypoints>
-      <waypoint lat="48.982226421504066" lon="2.6388181687363867" speed="5"/>
-      <waypoint lat="48.999224395860445" lon="2.6376015377162725" speed="5"/>
-      <waypoint lat="49.00053307429091" lon="2.6248769693464364" speed="5"/>
-    </waypoints>
-  </ac>
-  <ac id="3">
-    <waypoints>
-      <waypoint lat="49.01626880010864" lon="2.62284404068483" speed="5"/>
-      <waypoint lat="49.01524054071074" lon="2.6388529040606112" speed="5"/>
-      <waypoint lat="49.00597097008076" lon="2.6375525822666424" speed="5"/>
+      <waypoint lat="48.99436319752002" lon="2.570993408000665" speed="5"/>
+      <waypoint lat="48.99979262365593" lon="2.5796968150679103" speed="5"/>
+      <waypoint lat="49.00696532701307" lon="2.573209718071983" speed="5"/>
     </waypoints>
   </ac>
 </aircraft>

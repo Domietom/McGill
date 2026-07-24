@@ -11,7 +11,7 @@ class AircraftItem(QFrame):
 
         self.aircraft = aircraft
 
-        # self.isSelected = False
+        self.isSelected = False
 
         self.setFrameShape(QFrame.Box)
         self.setLineWidth(2)
@@ -58,9 +58,12 @@ class AircraftItem(QFrame):
 
     def setSelected(self, isSelected):
         # self.isSelected = isSelected
+        print(f"setSelected appelé pour {self.aircraft.ID}")
         if len(self.aircraft.trajectory) >=2 and self.aircraft.ID != 0:
             # self.formWidget.setVisible(isSelected)
             self.formWidget.show() if isSelected else self.formWidget.hide()
+            self.isSelected = isSelected
+            print(f"setSelected réalisé pour {self.aircraft.ID}")
             self.update()
 
     def setSpeedChoice(self):
@@ -75,6 +78,7 @@ class AircraftItem(QFrame):
                 self.speedLayout.addRow(label, edit)
             self.mainLayout.addWidget(self.formWidget)
 
+        self.setSelected(self.isSelected)
         self.update()
 
     def __repr__(self):

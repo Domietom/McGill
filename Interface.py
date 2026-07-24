@@ -51,9 +51,13 @@ class Interface(QWidget):
 
             currentAircraftItem = self.getAircraftItem(self.mapWidget.currentAircraft)
             if currentAircraftItem is not None:
+                currentAircraftItem.isSelected = False
                 currentAircraftItem.setSpeedChoice()
-            self.setSize()
-        
+            
+        currentAircraftItem = self.getAircraftItem(self.mapWidget.currentAircraft)
+        if currentAircraftItem is not None:
+            currentAircraftItem.setSelected(False)
+        self.setSize()
         self.mapWidget.currentAircraft = Aircraft()
         self.update()
 
@@ -117,6 +121,7 @@ class Interface(QWidget):
         if previous:
             previousAircraftItem = self.aircraftList.itemWidget(previous)
             previousAircraftItem.setSelected(False)
+            print(previousAircraftItem.aircraft)
         if current:
             if len(self.mapWidget.allAircraft) != 0:
                 self.end_trajectory()
@@ -124,9 +129,10 @@ class Interface(QWidget):
                 self.mapWidget.currentAircraft = currentAircraftItem.aircraft
                 currentAircraftItem.setSelected(True)
                 # print(f"ac {self.mapWidget.currentAircraft} is {currentAircraftItem.isSelected}")
+                print(currentAircraftItem.aircraft)
         self.setSize()
         self.update()
-        print(f"all {self.mapWidget.allAircraft}")
+        # print(f"all {self.mapWidget.allAircraft}")
 
 
     def updateOKButton(self):
