@@ -22,7 +22,8 @@ class Map(QWidget):
 
         self.xml_class = xml_class
 
-        self.waitingForConflictPoint = False
+        self.waitingForIntersectionPoint = False
+        self.waitingForFollowPoint = False
         self.waitingForTrajectoryPoints = False
 
         self.allAircraft = []
@@ -228,14 +229,14 @@ class Map(QWidget):
 
         if event.button() == Qt.RightButton:
 
-            if self.waitingForConflictPoint:
+            if self.waitingForIntersectionPoint or self.waitingForFollowPoint:
                 screen_pos = event.pos()
                 # delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
                 # self.conflicts.append(delta)
                 # self.update()
 
-                utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-                geo_pos = utm_to_geo(utm_pos.x(), utm_pos.y(), self.airport.zoneNumber, self.airport.zoneLetter)
+                # utm_pos = screen_to_utm(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                geo_pos = screen_to_geo(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size(), self.airport.zoneNumber, self.airport.zoneLetter)
 
                 # offset, ok = QInputDialog.getInt(self, "Entrée","Entrez un entier :", value=0)
                 # if ok :
@@ -249,9 +250,13 @@ class Map(QWidget):
                 self.edit.setToolTip("Please enter the offset in meters")
                 self.edit.show()
                 self.edit.setFocus()
-                self.edit.returnPressed.connect(lambda: self.valider(geo_pos))
+                self.edit.returnPressed.connect(lambda: self.validate(geo_pos))
 
-                self.waitingForConflictPoint = False
+                self.waitingForIntersectionPoint = False
+
+            if self.waitingForFollowPoint:
+                pass
+                
             
             if self.waitingForTrajectoryPoints:
                 screen_pos = event.pos()
@@ -265,12 +270,17 @@ class Map(QWidget):
 
             self.last_pos = event.pos()
 
-    def valider(self, geo_pos):
+    def validate(self, geo_pos):
         xml_offset = int(self.edit.text())
 
         for aircraft in self.allAircraft:
             if aircraft.ID == self.currentAircraft.ID:
-                aircraft.conflicts.append((geo_pos, xml_offset))
+                if self.waitingForFollowPoint:
+                    aircraft.follow.append((geo_pos, xml_offset))
+                    self.waitingForFollowPoint = False
+                if self.waitingForIntersectionPoint:
+                    aircraft.conflicts.append((geo_pos, xml_offset))
+                    self.waitingForIntersectionPoint = False                
 
         self.edit.hide()
         self.edit.deleteLater()

@@ -1,10 +1,11 @@
-from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QFormLayout, QLineEdit
+from PySide6.QtWidgets import QFrame, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QFormLayout, QLineEdit, QComboBox
 from PySide6.QtCore import Qt, Signal
 
 class AircraftItem(QFrame):
 
     deleteRequested = Signal(QWidget)
-    conflictRequested = Signal(QWidget)
+    intersectionRequested = Signal(QWidget)
+    followRequested = Signal(QWidget)
 
     def __init__(self, aircraft):
         super().__init__()
@@ -19,14 +20,17 @@ class AircraftItem(QFrame):
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.deleteButton = QPushButton("Delete")
-        self.conflictButton = QPushButton("Add conflict")
+        self.intersectionButton = QPushButton("Intersection")
+        self.followButton = QPushButton("Follow")
 
         self.deleteButton.clicked.connect(self.ask_delete)
-        self.conflictButton.clicked.connect(self.ask_conflict)
+        self.intersectionButton.clicked.connect(self.ask_intersection)
+        self.followButton.clicked.connect(self.ask_follow)
 
         buttons = QHBoxLayout()
         buttons.addWidget(self.deleteButton)
-        buttons.addWidget(self.conflictButton)
+        buttons.addWidget(self.intersectionButton)
+        buttons.addWidget(self.followButton)
 
         self.mainLayout = QVBoxLayout(self)
         self.mainLayout.addWidget(title)
@@ -52,8 +56,11 @@ class AircraftItem(QFrame):
     def ask_delete(self):
         self.deleteRequested.emit(self)
 
-    def ask_conflict(self):
-        self.conflictRequested.emit(self)
+    def ask_intersection(self):
+        self.intersectionRequested.emit(self)
+
+    def ask_follow(self):
+        self.followRequested.emit(self)
 
     def setSelected(self, isSelected):
         if len(self.aircraft.trajectory) >=2 and self.aircraft.ID != 0:

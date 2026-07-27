@@ -5,6 +5,7 @@ class Aircraft:
         self.trajectory = []
         self.segmentSpeed = {}
         self.conflicts = []
+        self.follow = []
 
     def __repr__(self):
         return f'Aircraft {self.ID}'

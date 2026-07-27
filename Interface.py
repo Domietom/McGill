@@ -37,7 +37,7 @@ class Interface(QWidget):
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.mapWidget, 6)
-        layout.addLayout(rightPanel, 1)
+        layout.addLayout(rightPanel, 2)
 
     def end_trajectory(self):
         self.mapWidget.waitingForTrajectoryPoints = False
@@ -79,7 +79,8 @@ class Interface(QWidget):
         self.aircraftList.setCurrentItem(item)
 
         card.deleteRequested.connect(lambda w=card, i=item: self.remove_plane(i, w))
-        card.conflictRequested.connect(lambda w=card, i=item: self.add_conflict(i,w))
+        card.intersectionRequested.connect(lambda w=card, i=item: self.add_intersection(i,w))
+        card.followRequested.connect(lambda w=card, i=item: self.add_follow(i,w))
 
         self.aircraftList.addItem(item)
         self.aircraftList.setItemWidget(item, card)
@@ -101,9 +102,16 @@ class Interface(QWidget):
         self.update()
         card.deleteLater()
 
-    def add_conflict(self, item, card):
-        self.mapWidget.waitingForConflictPoint = True
+    def add_intersection(self, item, card):
+        self.mapWidget.waitingForIntersectionPoint = True
         self.mapWidget.waitingForTrajectoryPoints = False
+        self.mapWidget.waitingForFollowPoint = False
+        self.aircraftList.setCurrentItem(item)
+
+    def add_follow(self, item, card):
+        self.mapWidget.waitingForFollowPoint = True
+        self.mapWidget.waitingForTrajectoryPoints = False
+        self.mapWidget.waitingForIntersectionPoint = False
         self.aircraftList.setCurrentItem(item)
 
     def on_list_selection(self, current, previous):
@@ -117,11 +125,9 @@ class Interface(QWidget):
                 currentAircraftItem = self.aircraftList.itemWidget(current)
                 self.mapWidget.currentAircraft = currentAircraftItem.aircraft
                 currentAircraftItem.setSelected(True)
-                # print(f"ac {self.mapWidget.currentAircraft} is {currentAircraftItem.isSelected}")
                 print(currentAircraftItem.aircraft)
         self.setSize()
         self.update()
-        # print(f"all {self.mapWidget.allAircraft}")
 
 
     def updateOKButton(self):
