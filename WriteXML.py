@@ -92,7 +92,7 @@ class WriteXML:
                 offset = ET.SubElement(conflictXML, 'offset')
                 offset.set('dist', str(offset_value))
                 slowDown = ET.SubElement(conflictXML, 'slow-down')
-                slowDown.set('dist', str(slowDistance))
+                slowDown.set('dist', str(int(slowDistance)))
                 slowDown.set('reduc', str(reducedSpeed))
 
         self.write(root, "trajTEST.xml")
