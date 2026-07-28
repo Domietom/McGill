@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+from geopy.distance import distance
 
 class WriteXML:
 
@@ -74,6 +75,25 @@ class WriteXML:
                 location.set('lon', str(position[1]))
                 offset = ET.SubElement(conflictXML, 'offset')
                 offset.set('dist', str(offset_value))
+            
+            leadFollowDico = aircraft.follow
+            if leadFollowDico['offset'] != -999:
+                startPosition = leadFollowDico['startFollowPosition']
+                offset_value = leadFollowDico['offset']
+                reducedSpeed = leadFollowDico['reducedSpeed']
+                endPosition = leadFollowDico['endFollowPosition']
+                slowDistance = distance(startPosition, endPosition).meters
+
+                conflictXML = ET.SubElement(ac, 'conflict')
+                conflictXML.set('type', 'lead-follow')
+                location = ET.SubElement(conflictXML, 'location')
+                location.set('lat', str(startPosition[0]))
+                location.set('lon', str(startPosition[1]))
+                offset = ET.SubElement(conflictXML, 'offset')
+                offset.set('dist', str(offset_value))
+                slowDown = ET.SubElement(conflictXML, 'slow-down')
+                slowDown.set('dist', str(slowDistance))
+                slowDown.set('reduc', str(reducedSpeed))
 
         self.write(root, "trajTEST.xml")
         

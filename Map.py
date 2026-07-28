@@ -24,6 +24,7 @@ class Map(QWidget):
 
         self.waitingForIntersectionPoint = False
         self.waitingForFollowPoint = False
+        self.waitingForEndFollow = False
         self.waitingForTrajectoryPoints = False
 
         self.allAircraft = []
@@ -229,7 +230,7 @@ class Map(QWidget):
 
         if event.button() == Qt.RightButton:
 
-            if self.waitingForIntersectionPoint or self.waitingForFollowPoint:
+            if self.waitingForIntersectionPoint or self.waitingForFollowPoint or self.waitingForEndFollow:
                 screen_pos = event.pos()
                 # delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
                 # self.conflicts.append(delta)
@@ -251,11 +252,6 @@ class Map(QWidget):
                 self.edit.show()
                 self.edit.setFocus()
                 self.edit.returnPressed.connect(lambda: self.validate(geo_pos))
-
-                self.waitingForIntersectionPoint = False
-
-            if self.waitingForFollowPoint:
-                pass
                 
             
             if self.waitingForTrajectoryPoints:
@@ -271,15 +267,25 @@ class Map(QWidget):
             self.last_pos = event.pos()
 
     def validate(self, geo_pos):
-        xml_offset = int(self.edit.text())
 
         for aircraft in self.allAircraft:
             if aircraft.ID == self.currentAircraft.ID:
+                if self.waitingForEndFollow:
+                    reducedSpeed = int(self.edit.text())
+                    aircraft.follow['endFollowPosition'] = geo_pos
+                    aircraft.follow['reducedSpeed'] = reducedSpeed
+                    self.waitingForEndFollow = False
+                    print(aircraft.follow)
+
+                offset = int(self.edit.text())
                 if self.waitingForFollowPoint:
-                    aircraft.follow.append((geo_pos, xml_offset))
+                    aircraft.follow['startFollowPosition'] = geo_pos
+                    aircraft.follow['offset'] = offset
                     self.waitingForFollowPoint = False
+                    self.waitingForEndFollow = True
+
                 if self.waitingForIntersectionPoint:
-                    aircraft.conflicts.append((geo_pos, xml_offset))
+                    aircraft.conflicts.append((geo_pos, offset))
                     self.waitingForIntersectionPoint = False                
 
         self.edit.hide()
