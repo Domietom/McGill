@@ -17,45 +17,9 @@
   </ac>
   <ac id="1">
     <waypoints>
-      <waypoint lat="49.00651276672032" lon="2.5813294089713748" speed="-99"/>
-      <waypoint lat="49.00862976493273" lon="2.581043355753152" speed="5"/>
-    </waypoints>
-  </ac>
-  <ac id="2">
-    <waypoints>
-      <waypoint lat="49.00933719701815" lon="2.5855092144902665" speed="-99"/>
-      <waypoint lat="49.008960401910954" lon="2.5789388540952807" speed="10"/>
-    </waypoints>
-    <conflict type="intersection">
-      <location lat="49.00914957459082" lon="2.5824252454986327"/>
-      <offset dist="0"/>
-    </conflict>
-  </ac>
-  <ac id="3">
-    <waypoints>
-      <waypoint lat="49.00830005842454" lon="2.583416123764149" speed="-99"/>
-      <waypoint lat="49.008486852822806" lon="2.5862764649418537" speed="20"/>
-    </waypoints>
-  </ac>
-  <ac id="4">
-    <waypoints>
-      <waypoint lat="49.01479420472758" lon="2.577586164483392" speed="-99"/>
-      <waypoint lat="49.01489973513738" lon="2.579248520992638" speed="10"/>
-      <waypoint lat="49.01501897441556" lon="2.5816499930917107" speed="5"/>
-      <waypoint lat="49.01891782386373" lon="2.58107965869352" speed="5"/>
-      <waypoint lat="49.01926905658533" lon="2.5804214341844944" speed="5"/>
-      <waypoint lat="49.019243040855734" lon="2.5793463273857924" speed="5"/>
-    </waypoints>
-    <conflict type="lead-follow">
-      <location lat="49.015029903021116" lon="2.5816163004278625"/>
-      <offset dist="100"/>
-      <slow-down dist="436" reduc="-5"/>
-    </conflict>
-  </ac>
-  <ac id="6">
-    <waypoints>
-      <waypoint lat="49.00819706502932" lon="2.5811304204901497" speed="-99"/>
-      <waypoint lat="49.0140051599695" lon="2.5803647208781957" speed="40"/>
+      <waypoint lat="48.9913530469133" lon="2.571907779569424" speed="-99"/>
+      <waypoint lat="48.99525020665373" lon="2.5798033854585736" speed="10"/>
+      <waypoint lat="49.006999917234154" lon="2.5952927761274016" speed="10"/>
     </waypoints>
   </ac>
 </aircraft>

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit
 from PySide6.QtCore import QPoint, Qt, QPointF, QRect
-from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette, QPixmap
+from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette, QPixmap, QBrush
 from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, geo_to_utm, geo_to_screen, screen_to_geo #, zoom_point , inv_zoom_point, 
 import xml.etree.ElementTree as ET
 from Aircraft import Aircraft
@@ -49,6 +49,24 @@ class Map(QWidget):
         pen.setWidth(4 + 5*self.zoom)
         painter.setPen(pen)
 
+    def draw_conflict(self, position, painter):
+        screen_pos = geo_to_screen(position, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+        
+        pen = QPen(Qt.red)
+        pen.setWidth(10 + 5*self.zoom)
+        painter.setPen(pen)
+        painter.drawEllipse(screen_pos, 3, 3)
+
+    def draw_node(self, position, painter):
+        pen = QPen(Qt.black)
+        pen.setWidth(5 + 5*self.zoom)
+        painter.setPen(pen)
+        painter.drawEllipse(position, 3, 3)
+        
+        pen = QPen(Qt.darkYellow)
+        pen.setWidth(4 + 5*self.zoom)
+        painter.setPen(pen)
+
     def paintEvent(self, event):
 
         painter = QPainter(self)
@@ -67,11 +85,6 @@ class Map(QWidget):
         pen.setWidth(2+ 5*self.zoom)
         painter.setPen(pen)
 
-        # for taxiNode in self.airport.taxiNodes.values() :
-        #     node = utm_to_screen(taxiNode.pos, self.zoom, self.airport.center, self.get_screen_size())
-        #     node = QPoint(node[0], node[1])
-        #     painter.drawPoint(node)
-
         for taxiSegment in self.airport.taxiSegments :
             ext1 = utm_to_screen(taxiSegment.node1.pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
             ext1 = QPointF(ext1[0],ext1[1])
@@ -80,18 +93,11 @@ class Map(QWidget):
 
             painter.drawLine(ext1, ext2)
 
-        # pen = QPen(Qt.red)
-        # pen.setWidth(10)
-        # painter.setPen(pen)
-
         # for conflict in self.conflicts :
         #     delta = zoom_point(conflict, self.zoom, self.offset, self.get_screen_size())
         #     painter.drawEllipse(delta, 3, 3)
 
         # trajectories_dico = list(self.trajectories_dico.values())
-
-        # pen.setWidth(4)
-        # painter.setPen(pen)
         
         # for trajectory in trajectories_dico:
         #     tj_1 = trajectory[0]
@@ -139,12 +145,7 @@ class Map(QWidget):
             if len(currentConflicts) != 0:
                 for conflict in currentConflicts:
                     geo_pos = conflict[0]
-                    screen_pos = geo_to_screen(geo_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-
-                    pen = QPen(Qt.red)
-                    pen.setWidth(10 + 5*self.zoom)
-                    painter.setPen(pen)
-                    painter.drawEllipse(screen_pos, 3, 3)
+                    self.draw_conflict(geo_pos, painter)
 
         for aircraft in self.allAircraft:
 
@@ -153,7 +154,7 @@ class Map(QWidget):
             if aircraft.ID == 0:
                 pen = QPen(Qt.red)
                 pen.setWidth(4)
-            elif aircraft != self.currentAircraft :
+            elif aircraft is not self.currentAircraft :
                 pen = QPen(Qt.black)
                 pen.setWidth(4 + 5*self.zoom)
             else:
@@ -188,18 +189,16 @@ class Map(QWidget):
                         # ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
                         ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                         painter.drawLine(ext1, ext2)
+                        if aircraft is self.currentAircraft:
+                            self.draw_node(ext1, painter)
 
                         ext1 = ext2
+                    self.draw_node(ext2, painter)
                     self.draw_start(start, aircraft.ID, painter)
 
                 for conflict in aircraft.conflicts:
                     geo_pos = conflict[0]
-                    screen_pos = geo_to_screen(geo_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size())
-
-                    pen = QPen(Qt.red)
-                    pen.setWidth(10 + 5*self.zoom)
-                    painter.setPen(pen)
-                    painter.drawEllipse(screen_pos, 3, 3)
+                    self.draw_conflict(geo_pos, painter)
 
 
         painter.end()
