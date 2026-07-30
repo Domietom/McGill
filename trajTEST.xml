@@ -15,11 +15,4 @@
       <waypoint lat="49.022497" lon="2.566047" speed="10"/>
     </waypoints>
   </ac>
-  <ac id="1">
-    <waypoints>
-      <waypoint lat="48.9913530469133" lon="2.571907779569424" speed="-99"/>
-      <waypoint lat="48.99525020665373" lon="2.5798033854585736" speed="10"/>
-      <waypoint lat="49.006999917234154" lon="2.5952927761274016" speed="10"/>
-    </waypoints>
-  </ac>
 </aircraft>

@@ -9,13 +9,13 @@ class Interface(QWidget):
 
     endTrajectorySignal = Signal(QWidget)
 
-    def __init__(self, apt, xml_class, scenario):
+    def __init__(self, apt, xml_class):
         super().__init__()
 
         self.setWindowTitle("Experiment configuration")
         self.showMaximized()
 
-        self.mapWidget = Map(apt, xml_class, scenario)
+        self.mapWidget = Map(apt, xml_class)
         self.aircraftList = QListWidget()
         self.aircraftList.currentItemChanged.connect(self.on_list_selection)
 
@@ -34,6 +34,13 @@ class Interface(QWidget):
         self.addPlaneButton = QPushButton('+')
         self.addPlaneButton.clicked.connect(self.add_plane)
         rightPanel.addWidget(self.addPlaneButton)
+
+        loadLayout = QHBoxLayout()
+        loadButton = QPushButton('Load a file')
+        saveButton = QPushButton('Save')
+        loadLayout.addWidget(loadButton)
+        loadLayout.addWidget(saveButton)
+        rightPanel.addLayout(loadLayout)
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.mapWidget, 6)

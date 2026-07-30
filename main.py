@@ -20,8 +20,8 @@ def main():
 
         xml_class = WriteXML()
 
-        interface = Interface(airport, xml_class, scenario)
-        interface.mapWidget.read_trajectories()
+        interface = Interface(airport, xml_class)
+        interface.mapWidget.read_trajectories(scenario)
         interface.show()
 
     else:

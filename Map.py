@@ -7,14 +7,14 @@ from Aircraft import Aircraft
 
 class Map(QWidget):
 
-    def __init__(self, apt, xml_class, scenario):
+    def __init__(self, apt, xml_class):
         super().__init__()
 
         self.setStyleSheet("background: lightgrey;")
 
         self.center = self.rect().center()
         self.airport = apt
-        self.scenario = scenario
+        # self.scenario = scenario
         self.zoom = 0.1
         self.offset = QPointF()
 
@@ -326,9 +326,9 @@ class Map(QWidget):
     #                 userAircraft.trajectory.append(((lat, lon), speed))
     #     self.allAircraft.append(userAircraft)
 
-    def read_trajectories(self):
+    def read_trajectories(self, scenario):
             
-            tree = ET.parse(self.scenario)
+            tree = ET.parse(scenario)
             root = tree.getroot()
     
             for aircraft in root.findall('ac'):
