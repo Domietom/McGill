@@ -42,6 +42,8 @@ class Interface(QWidget):
         loadLayout.addWidget(saveButton)
         rightPanel.addLayout(loadLayout)
 
+        saveButton.clicked.connect(self.save)
+
         layout = QHBoxLayout(self)
         layout.addWidget(self.mapWidget, 6)
         layout.addLayout(rightPanel, 2)
@@ -140,8 +142,11 @@ class Interface(QWidget):
     def updateOKButton(self):
         self.endTrajectoryButton.setChecked(self.mapWidget.waitingForTrajectoryPoints)
 
-    def closeEvent(self, event: QCloseEvent):
+    def save(self):
         self.mapWidget.xml_class.write_all(self.mapWidget.allAircraft)
+
+    def closeEvent(self, event: QCloseEvent):
+        self.save()
 
     def getAircraftItem(self, aircraft):
         for i in range(self.aircraftList.count()):
