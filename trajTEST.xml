@@ -4,44 +4,58 @@
     <waypoints>
       <waypoint lat="49.006226" lon="2.582553" speed="10"/>
       <waypoint lat="49.009378" lon="2.582391" speed="10"/>
-      <waypoint lat="49.012524" lon="2.581962" speed="10"/>
-      <waypoint lat="49.018906" lon="2.581093" speed="10"/>
-      <waypoint lat="49.020004" lon="2.58031" speed="10"/>
-      <waypoint lat="49.02075" lon="2.57854" speed="10"/>
-      <waypoint lat="49.020876" lon="2.577746" speed="10"/>
-      <waypoint lat="49.020585" lon="2.570869" speed="10"/>
-      <waypoint lat="49.020354" lon="2.566835" speed="10"/>
-      <waypoint lat="49.020609" lon="2.566448" speed="10"/>
-      <waypoint lat="49.022497" lon="2.566047" speed="10"/>
+      <waypoint lat="49.008784" lon="2.577416" speed="10"/>
+      <waypoint lat="49.008661" lon="2.575544" speed="10"/>
+      <waypoint lat="49.008532" lon="2.571609" speed="10"/>
+      <waypoint lat="49.008396" lon="2.569092" speed="10"/>
+      <waypoint lat="49.008066" lon="2.564352" speed="10"/>
+      <waypoint lat="49.005637" lon="2.564682" speed="10"/>
+      <waypoint lat="49.005715" lon="2.566936" speed="10"/>
     </waypoints>
   </ac>
   <ac id="1">
     <waypoints>
-      <waypoint lat="48.995344487249646" lon="2.5453523831386873" speed="-99"/>
-      <waypoint lat="48.99903741773123" lon="2.546549227865662" speed="10"/>
-      <waypoint lat="48.9986295905793" lon="2.5573535095777946" speed="10"/>
+      <waypoint lat="48.991207373051964" lon="2.5571458753507095" speed="-99"/>
+      <waypoint lat="48.997981992810224" lon="2.564468396979026" speed="10"/>
     </waypoints>
+    <conflict type="intersection">
+      <location lat="48.995448259402174" lon="2.5605259699276894"/>
+      <offset dist="1.0"/>
+    </conflict>
+    <conflict type="lead-follow">
+      <location lat="49.00827998794505" lon="2.5760017044677292"/>
+      <offset dist="2.0"/>
+      <slow-down dist="1263" reduc="3"/>
+      <end-position lat="49.00618215666594" lon="2.59297487822226"/>
+    </conflict>
   </ac>
   <ac id="0">
     <waypoints>
       <waypoint lat="49.006226" lon="2.582553" speed="10"/>
       <waypoint lat="49.009378" lon="2.582391" speed="10"/>
-      <waypoint lat="49.012524" lon="2.581962" speed="10"/>
-      <waypoint lat="49.018906" lon="2.581093" speed="10"/>
-      <waypoint lat="49.020004" lon="2.58031" speed="10"/>
-      <waypoint lat="49.02075" lon="2.57854" speed="10"/>
-      <waypoint lat="49.020876" lon="2.577746" speed="10"/>
-      <waypoint lat="49.020585" lon="2.570869" speed="10"/>
-      <waypoint lat="49.020354" lon="2.566835" speed="10"/>
-      <waypoint lat="49.020609" lon="2.566448" speed="10"/>
-      <waypoint lat="49.022497" lon="2.566047" speed="10"/>
+      <waypoint lat="49.008784" lon="2.577416" speed="10"/>
+      <waypoint lat="49.008661" lon="2.575544" speed="10"/>
+      <waypoint lat="49.008532" lon="2.571609" speed="10"/>
+      <waypoint lat="49.008396" lon="2.569092" speed="10"/>
+      <waypoint lat="49.008066" lon="2.564352" speed="10"/>
+      <waypoint lat="49.005637" lon="2.564682" speed="10"/>
+      <waypoint lat="49.005715" lon="2.566936" speed="10"/>
     </waypoints>
   </ac>
   <ac id="1">
     <waypoints>
-      <waypoint lat="48.995344487249646" lon="2.5453523831386873" speed="-99"/>
-      <waypoint lat="48.99903741773123" lon="2.546549227865662" speed="10"/>
-      <waypoint lat="48.9986295905793" lon="2.5573535095777946" speed="10"/>
+      <waypoint lat="48.991207373051964" lon="2.5571458753507095" speed="-99"/>
+      <waypoint lat="48.997981992810224" lon="2.564468396979026" speed="10"/>
     </waypoints>
+    <conflict type="intersection">
+      <location lat="48.995448259402174" lon="2.5605259699276894"/>
+      <offset dist="1.0"/>
+    </conflict>
+    <conflict type="lead-follow">
+      <location lat="49.01385589292936" lon="2.540397305309166"/>
+      <offset dist="1"/>
+      <slow-down dist="1145" reduc="2"/>
+      <end-position lat="49.01706266467906" lon="2.555275350532099"/>
+    </conflict>
   </ac>
 </aircraft>

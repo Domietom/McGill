@@ -13,19 +13,24 @@ def main():
     app = QApplication(sys.argv)
     airport.readApt()
 
-    dialog = ScenarioDialog()
+    xml_class = WriteXML()
 
-    if dialog.exec():
-        scenario = dialog.getScenario()
+    interface = Interface(airport, xml_class)
+    interface.show()
 
-        xml_class = WriteXML()
+    # dialog = ScenarioDialog()
 
-        interface = Interface(airport, xml_class)
-        interface.mapWidget.read_trajectories(scenario)
-        interface.show()
+    # if dialog.exec():
+    #     scenario = dialog.getScenario()
 
-    else:
-        sys.exit()
+    #     xml_class = WriteXML()
+
+    #     interface = Interface(airport, xml_class)
+    #     interface.mapWidget.read_trajectories(scenario)
+    #     interface.show()
+
+    # else:
+    #     sys.exit()
         
     sys.exit(app.exec())
 

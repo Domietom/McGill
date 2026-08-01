@@ -4,6 +4,7 @@ from PySide6.QtGui import QPainter, QPen, QColor, QWheelEvent, QPalette, QPixmap
 from CoordConverter import utm_to_screen, screen_to_utm, utm_to_geo, geo_to_utm, geo_to_screen, screen_to_geo #, zoom_point , inv_zoom_point, 
 import xml.etree.ElementTree as ET
 from Aircraft import Aircraft
+from AircraftItem import AircraftItem
 
 class Map(QWidget):
 
@@ -125,7 +126,7 @@ class Map(QWidget):
         if self.currentAircraft.ID != 0:
             currentTrajectory = self.currentAircraft.trajectory
             if len(currentTrajectory) != 0 :
-                start = currentTrajectory[0][0]
+                start = currentTrajectory[0]
                 ext1 = geo_to_screen(start, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                 start = ext1
 
@@ -134,8 +135,8 @@ class Map(QWidget):
                 if len(currentTrajectory)>=2:
 
                     for waypoint in currentTrajectory[1:]:
-                        point = waypoint[0]
-                        ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                        # point = waypoint
+                        ext2 = geo_to_screen(waypoint, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                         painter.drawLine(ext1, ext2)
                         ext1 = ext2
                 
@@ -163,12 +164,12 @@ class Map(QWidget):
             painter.setPen(pen)
 
             if aircraft.ID == 0:
-                start = trajectory[0][0]
+                start = trajectory[0]
                 ext1 = geo_to_screen(start, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                 start = ext1
                 for waypoint in trajectory[1:]:
-                    point = waypoint[0]
-                    ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                    # point = waypoint[0]
+                    ext2 = geo_to_screen(waypoint, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                     painter.drawLine(ext1, ext2)
                     ext1 = ext2
                 icon = QPixmap(r"images\user_position.jpg")
@@ -178,16 +179,16 @@ class Map(QWidget):
             else:
 
                 if len(trajectory)>=2:
-                    start = trajectory[0][0]
+                    start = trajectory[0]
                     # ext1 = zoom_point(start, self.zoom, self.offset, self.get_screen_size())
                     ext1 = geo_to_screen(start, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                     start = ext1
 
                     for waypoint in trajectory[1:]:
-                        point = waypoint[0]
+                        # point = waypoint[0]
 
                         # ext2 = zoom_point(point, self.zoom, self.offset, self.get_screen_size())
-                        ext2 = geo_to_screen(point, self.zoom, self.offset, self.airport.center, self.get_screen_size())
+                        ext2 = geo_to_screen(waypoint, self.zoom, self.offset, self.airport.center, self.get_screen_size())
                         painter.drawLine(ext1, ext2)
                         if aircraft is self.currentAircraft:
                             self.draw_node(ext1, painter)
@@ -257,7 +258,7 @@ class Map(QWidget):
                 screen_pos = event.pos()
                 geo_pos = screen_to_geo(screen_pos, self.zoom, self.offset, self.airport.center, self.get_screen_size(), self.airport.zoneNumber, self.airport.zoneLetter)
                 # delta = inv_zoom_point(screen_pos, self.zoom, self.offset, self.get_screen_size())
-                waypoint = (geo_pos, 5)
+                waypoint = geo_pos
                 self.currentAircraft.trajectory.append(waypoint)
                 self.update()
 
@@ -274,7 +275,6 @@ class Map(QWidget):
                     aircraft.follow['endFollowPosition'] = geo_pos
                     aircraft.follow['reducedSpeed'] = reducedSpeed
                     self.waitingForEndFollow = False
-                    print(aircraft.follow)
 
                 offset = int(self.edit.text())
                 if self.waitingForFollowPoint:
@@ -327,31 +327,31 @@ class Map(QWidget):
     #     self.allAircraft.append(userAircraft)
 
     def read_trajectories(self, scenario):
+        tree = ET.parse(scenario)
+        root = tree.getroot()
+
+        for aircraft in root.findall('ac'):
             
-            tree = ET.parse(scenario)
-            root = tree.getroot()
-    
-            for aircraft in root.findall('ac'):
-                
-                # Get aircraft ID
-                ac_id = int(aircraft.get('id'))
-                currentAircraft = Aircraft(ac_id)
-                # self.trajectories_dico[ac_id] = []
-                
-                # Analyze waypoints the aircraft will have to go to
-                waypoints = aircraft.find('waypoints')
-                
-                # Go through every waypoint coordinates and store them in the local list
-                if waypoints is not None:
-                    for waypoint in waypoints.findall('waypoint'):
-                        lat = float(waypoint.get('lat'))
-                        lon = float(waypoint.get('lon'))
-                        speed = float(waypoint.get('speed')) #* 0.5144 #Conversion noeuds -> m/s
-                        # self.trajectories_dico[ac_id].append([lat, lon, speed])
-                        currentAircraft.trajectory.append(((lat, lon), speed))
+            # Get aircraft ID
+            ac_id = int(aircraft.get('id'))
+            currentAircraft = Aircraft(ac_id)
+            # self.trajectories_dico[ac_id] = []
+            
+            # Analyze waypoints the aircraft will have to go to
+            waypoints = aircraft.find('waypoints')
+            
+            # Go through every waypoint coordinates and store them in the local list
+            if waypoints is not None:
+                for waypoint in waypoints.findall('waypoint'):
+                    lat = float(waypoint.get('lat'))
+                    lon = float(waypoint.get('lon'))
+                    speed = float(waypoint.get('speed')) #* 0.5144 #Conversion noeuds -> m/s
+                    # self.trajectories_dico[ac_id].append([lat, lon, speed])
+                    currentAircraft.trajectory.append((lat, lon))
+                    currentAircraft.segmentSpeed[ac_id] = speed
 
-                conflict = aircraft.find('conflict')
-
+            # conflict = aircraft.find('conflict')
+            for conflict in aircraft.findall('conflict'):
                 if conflict is not None:
                     typeConflict = conflict.get('type')
                     location = conflict.find('location')
@@ -362,14 +362,22 @@ class Map(QWidget):
                     offsetDist = float(offset.get('dist'))
 
                     if typeConflict == "lead-follow":
-                        pass
-                        # reducedSpeed = conflict.find("reduced-speed")
-                        # val = reducedSpeed.get('val')
+                        slowDown = conflict.find('slow-down')
 
-                    
-                    currentAircraft.conflicts.append((lat, lon), offsetDist)
+                        endPosition = conflict.find('end-position')
+                        endLat = float(endPosition.get('lat'))
+                        endLon = float(endPosition.get('lon'))
+                        reducedSpeed = int(slowDown.get('reduc'))
 
-                self.allAircraft.append(currentAircraft)
+                        currentAircraft.follow['startFollowPosition'] = (lat, lon)
+                        currentAircraft.follow['offset'] = offsetDist
+                        currentAircraft.follow['reducedSpeed'] = reducedSpeed
+                        currentAircraft.follow['endFollowPosition'] = (endLat, endLon)
+
+                    else:
+                        currentAircraft.conflicts.append(((lat, lon), offsetDist))
+                        
+            self.allAircraft.append(currentAircraft)
 
 
 # https://www.w3schools.com/python/trypython.asp?filename=demo_ref_string_split2

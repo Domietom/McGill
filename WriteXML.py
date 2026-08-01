@@ -53,8 +53,8 @@ class WriteXML:
             indexSpeed = 0
             for point in aircraft.trajectory:
                 waypoint = ET.SubElement(waypoints, 'waypoint')
-                waypoint.set('lat', str(point[0][0]))
-                waypoint.set('lon', str(point[0][1]))
+                waypoint.set('lat', str(point[0]))
+                waypoint.set('lon', str(point[1]))
                 if aircraft.ID != 0:
                     if indexSpeed != 0:
                         waypoint.set('speed', aircraft.segmentSpeed[indexSpeed])
@@ -94,6 +94,10 @@ class WriteXML:
                 slowDown = ET.SubElement(conflictXML, 'slow-down')
                 slowDown.set('dist', str(int(slowDistance)))
                 slowDown.set('reduc', str(reducedSpeed))
+
+                endLocation = ET.SubElement(conflictXML, 'end-position')
+                endLocation.set('lat', str(endPosition[0]))
+                endLocation.set('lon', str(endPosition[1]))
 
         self.write(root, "trajTEST.xml")
         

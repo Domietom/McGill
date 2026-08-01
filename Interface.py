@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton, QListWidgetItem
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton, QListWidgetItem, QFileDialog
+
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QCloseEvent
 from Map import Map
@@ -36,13 +37,14 @@ class Interface(QWidget):
         rightPanel.addWidget(self.addPlaneButton)
 
         loadLayout = QHBoxLayout()
-        loadButton = QPushButton('Load a file')
+        loadButton = QPushButton('Load file')
         saveButton = QPushButton('Save')
         loadLayout.addWidget(loadButton)
         loadLayout.addWidget(saveButton)
         rightPanel.addLayout(loadLayout)
 
         saveButton.clicked.connect(self.save)
+        loadButton.clicked.connect(self.loadScenario)
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.mapWidget, 6)
@@ -82,6 +84,25 @@ class Interface(QWidget):
 
         card = AircraftItem(self.mapWidget.currentAircraft)
 
+        # item = QListWidgetItem()
+        # item.setSizeHint(card.sizeHint())
+
+        # self.aircraftList.setCurrentItem(item)
+
+        # card.deleteRequested.connect(lambda w=card, i=item: self.remove_plane(i, w))
+        # card.intersectionRequested.connect(lambda w=card, i=item: self.add_intersection(i,w))
+        # card.followRequested.connect(lambda w=card, i=item: self.add_follow(i,w))
+
+        # self.aircraftList.addItem(item)
+        # self.aircraftList.setItemWidget(item, card)
+
+        self.add_item(card)
+
+        self.mapWidget.waitingForTrajectoryPoints = True
+        self.updateOKButton()
+
+    def add_item(self, card):
+        
         item = QListWidgetItem()
         item.setSizeHint(card.sizeHint())
 
@@ -93,9 +114,6 @@ class Interface(QWidget):
 
         self.aircraftList.addItem(item)
         self.aircraftList.setItemWidget(item, card)
-
-        self.mapWidget.waitingForTrajectoryPoints = True
-        self.updateOKButton()
 
     def remove_plane(self, item, card):
         row = self.aircraftList.row(item)
@@ -143,7 +161,20 @@ class Interface(QWidget):
         self.endTrajectoryButton.setChecked(self.mapWidget.waitingForTrajectoryPoints)
 
     def save(self):
+        print(f"all item {self.aircraftList}")
         self.mapWidget.xml_class.write_all(self.mapWidget.allAircraft)
+
+    def loadScenario(self):
+        filename, _ = QFileDialog.getOpenFileName(self, "Open scenario", "", "XML files (*.xml);;All files (*)")
+
+        if filename:
+            self.mapWidget.allAircraft = []
+            self.mapWidget.read_trajectories(filename)
+            for aircraft in self.mapWidget.allAircraft:
+                if aircraft.ID != 0:
+                    aircraftItem = AircraftItem(aircraft)
+                    aircraftItem.setSpeedChoice()
+                    self.add_item(aircraftItem)
 
     def closeEvent(self, event: QCloseEvent):
         self.save()
