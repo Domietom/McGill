@@ -1,61 +1,9 @@
 <?xml version="1.0" ?>
 <aircraft>
-  <ac id="0">
-    <waypoints>
-      <waypoint lat="49.006226" lon="2.582553" speed="10"/>
-      <waypoint lat="49.009378" lon="2.582391" speed="10"/>
-      <waypoint lat="49.008784" lon="2.577416" speed="10"/>
-      <waypoint lat="49.008661" lon="2.575544" speed="10"/>
-      <waypoint lat="49.008532" lon="2.571609" speed="10"/>
-      <waypoint lat="49.008396" lon="2.569092" speed="10"/>
-      <waypoint lat="49.008066" lon="2.564352" speed="10"/>
-      <waypoint lat="49.005637" lon="2.564682" speed="10"/>
-      <waypoint lat="49.005715" lon="2.566936" speed="10"/>
-    </waypoints>
-  </ac>
   <ac id="1">
     <waypoints>
-      <waypoint lat="48.991207373051964" lon="2.5571458753507095" speed="-99"/>
-      <waypoint lat="48.997981992810224" lon="2.564468396979026" speed="10"/>
+      <waypoint lat="48.994523829975215" lon="2.5425573993000183" speed="-99"/>
+      <waypoint lat="49.00067714470375" lon="2.551798131711812" speed="10"/>
     </waypoints>
-    <conflict type="intersection">
-      <location lat="48.995448259402174" lon="2.5605259699276894"/>
-      <offset dist="1.0"/>
-    </conflict>
-    <conflict type="lead-follow">
-      <location lat="49.00827998794505" lon="2.5760017044677292"/>
-      <offset dist="2.0"/>
-      <slow-down dist="1263" reduc="3"/>
-      <end-position lat="49.00618215666594" lon="2.59297487822226"/>
-    </conflict>
-  </ac>
-  <ac id="0">
-    <waypoints>
-      <waypoint lat="49.006226" lon="2.582553" speed="10"/>
-      <waypoint lat="49.009378" lon="2.582391" speed="10"/>
-      <waypoint lat="49.008784" lon="2.577416" speed="10"/>
-      <waypoint lat="49.008661" lon="2.575544" speed="10"/>
-      <waypoint lat="49.008532" lon="2.571609" speed="10"/>
-      <waypoint lat="49.008396" lon="2.569092" speed="10"/>
-      <waypoint lat="49.008066" lon="2.564352" speed="10"/>
-      <waypoint lat="49.005637" lon="2.564682" speed="10"/>
-      <waypoint lat="49.005715" lon="2.566936" speed="10"/>
-    </waypoints>
-  </ac>
-  <ac id="1">
-    <waypoints>
-      <waypoint lat="48.991207373051964" lon="2.5571458753507095" speed="-99"/>
-      <waypoint lat="48.997981992810224" lon="2.564468396979026" speed="10"/>
-    </waypoints>
-    <conflict type="intersection">
-      <location lat="48.995448259402174" lon="2.5605259699276894"/>
-      <offset dist="1.0"/>
-    </conflict>
-    <conflict type="lead-follow">
-      <location lat="49.01385589292936" lon="2.540397305309166"/>
-      <offset dist="1"/>
-      <slow-down dist="1145" reduc="2"/>
-      <end-position lat="49.01706266467906" lon="2.555275350532099"/>
-    </conflict>
   </ac>
 </aircraft>

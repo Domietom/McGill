@@ -8,6 +8,7 @@ class WriteXML:
         self.conflictsRoot = ET.Element('aircraft')
         self.trajectoriesRoot = ET.Element('trajectories')
         self.finishedRoot = ET.Element('aircraft')
+        self.currentFilename = "trajTEST.xml"
 
     def intersection_type(self, pos, offset_value):
         root = self.conflictsRoot
@@ -42,7 +43,10 @@ class WriteXML:
 
         self.write(root, "trajTEST.xml")
 
-    def write_all(self, allAircraft):
+    def write_all(self, allAircraft, filename = None):
+        if filename is not None :
+            self.currentFilename = filename
+        self.finishedRoot = ET.Element('aircraft')
         root = self.finishedRoot
 
         for aircraft in allAircraft:
@@ -99,5 +103,5 @@ class WriteXML:
                 endLocation.set('lat', str(endPosition[0]))
                 endLocation.set('lon', str(endPosition[1]))
 
-        self.write(root, "trajTEST.xml")
+        self.write(root, self.currentFilename)
         

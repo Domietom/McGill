@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton, QListWidgetItem, QFileDialog
+from PySide6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout, QListWidget, QLabel, QPushButton, QListWidgetItem, QFileDialog, QMessageBox
 
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QCloseEvent
@@ -39,12 +39,15 @@ class Interface(QWidget):
         loadLayout = QHBoxLayout()
         loadButton = QPushButton('Load file')
         saveButton = QPushButton('Save')
+        saveAsButton = QPushButton('Save as')
         loadLayout.addWidget(loadButton)
         loadLayout.addWidget(saveButton)
+        loadLayout.addWidget(saveAsButton)
         rightPanel.addLayout(loadLayout)
 
         saveButton.clicked.connect(self.save)
         loadButton.clicked.connect(self.loadScenario)
+        saveAsButton.clicked.connect(self.save_as)
 
         layout = QHBoxLayout(self)
         layout.addWidget(self.mapWidget, 6)
@@ -144,8 +147,9 @@ class Interface(QWidget):
     def on_list_selection(self, current, previous):
         if previous:
             previousAircraftItem = self.aircraftList.itemWidget(previous)
-            previousAircraftItem.setSelected(False)
-            print(previousAircraftItem.aircraft)
+            if previousAircraftItem is not None:
+                previousAircraftItem.setSelected(False)
+                print(previousAircraftItem.aircraft)
         if current:
             if len(self.mapWidget.allAircraft) != 0:
                 self.end_trajectory()
@@ -161,11 +165,24 @@ class Interface(QWidget):
         self.endTrajectoryButton.setChecked(self.mapWidget.waitingForTrajectoryPoints)
 
     def save(self):
-        print(f"all item {self.aircraftList}")
         self.mapWidget.xml_class.write_all(self.mapWidget.allAircraft)
+
+    def save_as(self):
+        filename, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save as",
+            "",
+            "XML files (*.xml)"
+        )
+        if filename:  # user didn't canceled
+            if not filename.endswith(".xml"):
+                filename += ".xml"
+            self.mapWidget.xml_class.write_all(self.mapWidget.allAircraft, filename)
+        return bool(filename)
 
     def loadScenario(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Open scenario", "", "XML files (*.xml);;All files (*)")
+        self.mapWidget.xml_class.currentFilename = filename
 
         if filename:
             self.mapWidget.allAircraft = []
@@ -174,10 +191,38 @@ class Interface(QWidget):
                 if aircraft.ID != 0:
                     aircraftItem = AircraftItem(aircraft)
                     aircraftItem.setSpeedChoice()
+                    aircraftItem.setSelected(False)
                     self.add_item(aircraftItem)
 
+
     def closeEvent(self, event: QCloseEvent):
-        self.save()
+        msgBox = QMessageBox(self)
+        msgBox.setWindowTitle("Quit")
+        msgBox.setText("Save before exiting ?")
+
+        overwriteBtn = msgBox.addButton("Save", QMessageBox.AcceptRole)
+        saveAsBtn = msgBox.addButton("Save as", QMessageBox.ActionRole)
+        discardBtn = msgBox.addButton("Discard", QMessageBox.DestructiveRole)
+        cancelBtn = msgBox.addButton("Cancel", QMessageBox.RejectRole)
+
+        msgBox.setDefaultButton(overwriteBtn)
+        msgBox.exec_()
+
+        clicked = msgBox.clickedButton()
+
+        if clicked == overwriteBtn:
+            self.save()
+            event.accept()
+        elif clicked == saveAsBtn:
+            saved = self.save_as()
+            if saved:
+                event.accept()
+            else:
+                event.ignore()
+        elif clicked == discardBtn:
+            event.accept()
+        else:  # cancelBtn
+            event.ignore()
 
     def getAircraftItem(self, aircraft):
         for i in range(self.aircraftList.count()):
