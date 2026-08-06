@@ -1,9 +1,0 @@
-<?xml version="1.0" ?>
-<aircraft>
-  <ac id="1">
-    <waypoints>
-      <waypoint lat="48.994523829975215" lon="2.5425573993000183" speed="-99"/>
-      <waypoint lat="49.00067714470375" lon="2.551798131711812" speed="10"/>
-    </waypoints>
-  </ac>
-</aircraft>

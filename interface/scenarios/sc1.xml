@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<aircraft>
+  <ac id="0">
+    <waypoints>
+      <waypoint lat="49.006226" lon="2.582553" speed="10"/>
+      <waypoint lat="49.009378" lon="2.582391" speed="10"/>
+      <waypoint lat="49.012524" lon="2.581962" speed="10"/>
+      <waypoint lat="49.018906" lon="2.581093" speed="10"/>
+      <waypoint lat="49.020004" lon="2.58031" speed="10"/>
+      <waypoint lat="49.02075" lon="2.57854" speed="10"/>
+      <waypoint lat="49.020876" lon="2.577746" speed="10"/>
+      <waypoint lat="49.020585" lon="2.570869" speed="10"/>
+      <waypoint lat="49.020354" lon="2.566835" speed="10"/>
+      <waypoint lat="49.020609" lon="2.566448" speed="10"/>
+      <waypoint lat="49.022497" lon="2.566047" speed="10"/>
+    </waypoints>
+  </ac>
+</aircraft>
